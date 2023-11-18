@@ -1,18 +1,14 @@
-import Navbar from '@/components/Navbar'
+
 import './globals.css'
 import type { Metadata } from 'next'
-import Footer from '@/components/Footer'
-import Hero from '@/components/Hero'
-import Image from 'next/image'
-
-const styles = {
-  backgroundImage: 'url("/Main-BG.png")',
-  backgroundPosition: 'center',
-  backgroundSize: 'cover',
-  backgroundRepeat: 'no-repeat',
-  height: '100vh',
-  width: '100vw',
-}
+import Navbar from '../components/navbar/Navbar'
+import ClientOnly from '../components/ClientOnly'
+import RegisterModal from '@/components/modals/RegisterModal'
+import ToastProvider from './providers/ToastProvider'
+import LoginModal from '@/components/modals/LoginModal'
+import getCurrentUser from './actions/getCurrentUser'
+import { BookModal } from '@/components/modals/BookModal'
+import SearchModal from '@/components/modals/SearchModal'
 
 
 export const metadata: Metadata = {
@@ -20,22 +16,34 @@ export const metadata: Metadata = {
   description: 'Senior Project',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const currentUser = await getCurrentUser();
+
   return (
     <html lang="en">
-      <body className="relative">
-      <div style={styles}>
-      <Navbar />
-      <Hero />
-      </div>
-        {children}
-        <Footer />
+      <body>
+        <ClientOnly>
+          <ToastProvider/>
+          <SearchModal/>
+          <BookModal/>
+          <LoginModal/>
+          <RegisterModal/>
+        <Navbar currentUser={currentUser}/>
+        </ClientOnly>
+        <div className="
+        pb-20
+        pt-28
+        ">
+  {children}
+        </div>
+    
         </body>
     </html>
     
   )
 }
+

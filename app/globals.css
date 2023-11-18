@@ -10,51 +10,12 @@
   box-sizing: border-box;
   font-family: "Manrope", sans-serif;
 }
-.background-image {
-  background-image: url('../public/Main-BG.png'); /* Adjust the path accordingly */
-  background-repeat: no-repeat;
-  background-size: cover; /* Adjust to control how the image scales */
-;
+:root{
+  height:100%;
 }
-
-.max-width {
-  @apply max-w-[1440px] mx-auto;
-}
-
-.padding-x {
-  @apply sm:px-16 px-6;
-}
-
-.padding-y {
-  @apply py-4;
-}
-.flex-center {
-  @apply flex items-center justify-center;
-}
-
-.flex-between {
-  @apply flex justify-between items-center;
-}
-.hero__title {
-  @apply 2xl:text-[48px] sm:text-[40px] text-[32px] font-extrabold; /* Adjusted sizes */
-}
-
-.hero__subtitle {
-  @apply text-[24px] text-black-100 font-light mt-5; /* Adjusted size */
-}
-
-.custom-btn {
-  @apply flex flex-row relative justify-center items-center py-3 px-6 outline-none  ;
-}
-.footer__links {
-  @apply flex-1 w-full flex md:justify-end flex-wrap max-md:mt-10 gap-20;
-}
-.footer__link {
-  @apply flex flex-col gap-6 text-base min-w-[170px];
-}
-.transparent_nav{
-  @apply bg-transparent
-}
-.navbar-color{
-  background-color: #8C8CF4;
+.leaflet-bottom,
+.leaflet-control,
+.leaflet-pane,
+.leaflet-top{
+  z-index: 0 !important;
 }
