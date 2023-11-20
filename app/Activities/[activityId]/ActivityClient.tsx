@@ -98,6 +98,7 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
                 md:gap-10
                 mt-6">
                     <ActivityInfo
+                    activityId={activity.id}
                     user={activity.user}
                     category={category}
                     description={activity.description}

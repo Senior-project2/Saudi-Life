@@ -7,7 +7,10 @@ import ActivityCategory from "./ActivityCategory"
 import Map from "../Map"
 import Counter from "../Counter"
 import { useState } from "react"
-
+import toast from "react-hot-toast"
+import CustomButton from "../CustomButton"
+import Modal from "../modals/Modal"
+import axios from "axios"
 
 
 
@@ -22,6 +25,7 @@ interface ActivityInfoProps {
         description: string
     } | undefined
     activityDate: string
+    activityId: string
     
     
     
@@ -34,14 +38,47 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
     locationValue,
     category,
     activityDate,
+    activityId
     
     
 }) => {
-    
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [reviewContent, setReviewContent] = useState('');
     const {getByValue} = useSaudiStates()
     const coordinateslat = getByValue(locationValue)?.latitude
     const coordinateslng = getByValue(locationValue)?.longitude
+    const handleAddReviewClick = () => {
+        setIsModalOpen(true);
+    };
 
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+       
+    };
+    const handleReviewSubmit = async () => {
+        if (!reviewContent.trim()) {
+            toast.error('Please enter a review.');
+            return;
+        }
+
+        try {
+            const response = await axios.post('/api/reviews', {
+                content: reviewContent,
+                userId: user.id, // Assuming `user` prop has the user's ID
+                activityId: activityId,
+            });
+
+            // Assuming you want to display the newly created review
+            console.log('Review Created:', response.data);
+
+            toast.success('Review submitted successfully');
+            setReviewContent('');
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error('Error submitting review:', error);
+            toast.error('Failed to submit review');
+        }
+    };
   return (
     <div className="col-span-4 flex flex-col gap-8">
         <div className="flex flex-col gap-2">
@@ -93,7 +130,29 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
     center={[parseFloat(coordinateslat), parseFloat(coordinateslng)] }
   />
 )}
+<hr/>
+    <CustomButton
+    onClick={handleAddReviewClick}
+    label="Add Review"
+    />
+     <Modal
+                isOpen={isModalOpen}
+                onClose={handleModalClose}
+                onSubmit={handleReviewSubmit}
+                title="Add a Review"
+                actionLabel="Submit Review"
+                body={(
+                    <textarea
+                        className="w-full p-2 border border-gray-300 rounded"
+                        placeholder="Write your review here..."
+                        value={reviewContent}
+                        onChange={(e) => setReviewContent(e.target.value)}
+                    />
+                )}
+            />
+    
     </div>
+    
   )
 }
 
