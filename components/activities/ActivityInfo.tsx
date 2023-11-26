@@ -64,12 +64,11 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
         try {
             const response = await axios.post('/api/reviews', {
                 content: reviewContent,
-                userId: user.id, // Assuming `user` prop has the user's ID
+                userId: user.id, 
                 activityId: activityId,
             });
 
-            // Assuming you want to display the newly created review
-            console.log('Review Created:', response.data);
+           
 
             toast.success('Review submitted successfully');
             setReviewContent('');

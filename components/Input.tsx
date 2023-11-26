@@ -1,6 +1,7 @@
 "use client"
 
 import { format } from "path";
+import { SafeUser } from "@/app/types";
 import { ChangeEvent } from "react";
 import { UseFormRegister, FieldErrors, FieldValues } from "react-hook-form";
 import {TbCurrencyRiyal} from "react-icons/tb";
