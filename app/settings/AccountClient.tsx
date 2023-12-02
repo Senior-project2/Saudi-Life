@@ -12,6 +12,10 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import useResetPasswordModal from '../hooks/usResetPasswordModal';
 import ResetPasswordModal from '@/components/modals/resetPasswordModal';
+import UserImageUpload from '@/components/UserImageUpload';
+
+
+
 interface AccountClientProps {
     currentUser?: SafeUser | null;
 }
@@ -24,11 +28,14 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
         handleSubmit,
         formState: { errors },
         setValue,
+        watch
     } = useForm<FieldValues>({
         defaultValues: {
             name: currentUser?.name || '',
             email: currentUser?.email || '',
             phoneNumber: currentUser?.phoneNumber || '',
+            image: currentUser?.image || '',
+            description: currentUser?.description || ''
             
         }
     });
@@ -36,6 +43,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
     const [editable, setEditable] = useState(false);
     const resetPasswordModal = useResetPasswordModal();
     const [isLoading, setIsLoading] = useState(false);
+    const watchImage = watch('image');
 
     const onSubmit = async (data: FieldValues) => {
         if (!currentUser) {
@@ -58,6 +66,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
             });
     };
 
+    
 
     
     React.useEffect(() => {
@@ -65,13 +74,28 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
             setValue('name', currentUser.name || '');
             setValue('email', currentUser.email || '');
             setValue('phoneNumber', currentUser.phoneNumber || '');
+            setValue('image', currentUser.image || '');
+            setValue('description', currentUser.description || '');
         }
     }, [currentUser, setValue]);
+    
 
     const toggleEdit = () => {
+        
         setEditable(!editable);
     };
 
+    const handleImageChange = (imageUrl: string) => {
+        setValue('image', imageUrl,{
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true
+        });
+    }
+
+    
+
+ 
     return (
         <Container>
             <div className="pl-2">
@@ -81,8 +105,18 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
             />
             </div>
             
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-4 p-4 border rounded-lg shadow-md">
+            <div  className="mt-4 p-4 border rounded-lg shadow-md">
                 <div className="flex flex-col gap-4">
+                <div className="pt-2 pl-3" >
+                
+              <UserImageUpload
+              value={watchImage}
+              onChange={handleImageChange}
+              userId={currentUser?.id || 'samples'}
+              isEditable={editable}
+              />
+                </div>
+                <br/>
                 <Input
                     id="name"
                     label="Name"
@@ -99,6 +133,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
                     register={register}
                     errors={errors}
                 />
+                
                 <Input
                     id="phoneNumber"
                     label="Phone Number"
@@ -107,8 +142,17 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
                     register={register}
                     errors={errors}
                 />
+                 <Input
+                    id="description"
+                    label="Description"
+                    type="textarea"
+                    disabled={!editable}
+                    register={register}
+                    errors={errors}
+                />
                
                 </div>
+                
                 <div className="p-4">
                 <CustomButton
                 label="Edit Account Information"
@@ -119,7 +163,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
                 <div className="pt-2">
                 <CustomButton
                 label="Submit Changes"
-                onClick={onSubmit}
+                onClick={handleSubmit(onSubmit)}
                 disabled={!editable}
                 />
                 </div>
@@ -138,12 +182,14 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
                 >
                     Change Password
                 </div>
+                
 
             </div>
             <ResetPasswordModal
                 currentUser={currentUser}
                 />
-            </form>
+                
+            </div>
         </Container>
     );
 };

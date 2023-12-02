@@ -4,6 +4,7 @@ import getCurrentUser from "../actions/getCurrentUser"
 import getActivities from "../actions/getActivities"
 import MyActivitiesClient from "./MyActivitiesClient"
 
+
 const MyActivitiesPage = async () => {
     const currentUser = await getCurrentUser()
 

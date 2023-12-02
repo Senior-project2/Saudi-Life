@@ -2,23 +2,24 @@
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
-interface AvatarProps{
+interface UserAvatarProps{
     src: string | null | undefined
     
 }
-const Avatar: React.FC<AvatarProps> = ({
+const UserAvatar: React.FC<UserAvatarProps> = ({
     src}
 ) => {
   return (
     <Image
     className="rounded-full"
-    height="30"
-    width="30"
-    alt="Avatar"
+    height={100}
+    width={100}
+    
+    alt="UserAvatar"
     src={src || "/placeholder.png"}
     
     />
   )
 }
 
-export default Avatar
+export default UserAvatar

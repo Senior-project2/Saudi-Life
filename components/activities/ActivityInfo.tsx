@@ -11,6 +11,7 @@ import toast from "react-hot-toast"
 import CustomButton from "../CustomButton"
 import Modal from "../modals/Modal"
 import axios from "axios"
+import { useRouter } from "next/navigation"
 
 
 
@@ -50,7 +51,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
     const handleAddReviewClick = () => {
         setIsModalOpen(true);
     };
-
+    const router = useRouter()
     const handleModalClose = () => {
         setIsModalOpen(false);
        
@@ -81,8 +82,8 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
   return (
     <div className="col-span-4 flex flex-col gap-8">
         <div className="flex flex-col gap-2">
-            <div className="text-xl font-semibold flex flex-row items-center gap-2">
-                <div>
+            <div className="text-xl font-semibold flex flex-row items-center gap-2 cursor-pointer">
+                <div  onClick={() => router.push(`/User/${user.id}`)} >
                     Hosted By {user?.name}
                     </div>
                     <Avatar src={user?.image}/>
