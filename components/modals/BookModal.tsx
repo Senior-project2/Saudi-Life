@@ -1,7 +1,7 @@
 "use client"
 import Modal from "./Modal"
 import useBookModal from "@/app/hooks/onBookModal"
-import {useState, useMemo} from "react"
+import {useState, useMemo, useEffect} from "react"
 import Heading from "../Heading"
 import { categories } from "../navbar/Categories"
 import CategoryInput from "../CategoryInput"
@@ -26,16 +26,13 @@ enum STEPS{
     PRICE=5,
     DATE=6
 }
-export const BookModal =  () => {
+export const BookModal =   () => {
     const router = useRouter()
-
-  
     const bookModal = useBookModal()
     const [step, setStep] = useState(STEPS.CATEGORY)
     const[isLoading, setIsLoading] = useState(false)
-
-
-    const onNext = () => {
+    
+    const onNext = async () => {
         setStep((value) => value +1)
     }
     const onBack = () => {
@@ -46,6 +43,7 @@ export const BookModal =  () => {
         if(step !== STEPS.DATE){ 
         return onNext()
         }
+        
          setIsLoading(true)
 
          axios.post('/api/listings', data)
@@ -86,8 +84,10 @@ export const BookModal =  () => {
         formState: {errors},
         setValue,
         watch,
-        reset
+        reset,
+    
     } = useForm<FieldValues>({
+        
         defaultValues: {
             category: '',
             location: null,
@@ -201,6 +201,7 @@ export const BookModal =  () => {
                 <ImageUpload
                 value={imageSrc}
                 onChange={(value) => setCustomValue('imageSrc', value)}
+                
                 />
             </div>
             
@@ -282,7 +283,9 @@ bodyContent = (
         );
       }
     
-
+      useEffect(() => {
+        console.log(errors);
+    }, [errors]);
   return (
     <Modal
     title="Saudi Life"
@@ -294,5 +297,6 @@ bodyContent = (
     secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
     body={bodyContent}
     />
+    
   )
 }

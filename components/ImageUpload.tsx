@@ -4,6 +4,7 @@ import{CldUploadWidget} from 'next-cloudinary'
 import {useCallback} from 'react'
 import {MdOutlineAddPhotoAlternate} from 'react-icons/md'
 import Image from 'next/image'
+import { SafeUser } from '@/app/types'
 
 declare global{
     var cloudinary: any
@@ -12,11 +13,13 @@ declare global{
 interface ImageUploadProps{
     onChange: (value: string) => void;
     value: string
+    
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
     value,
-    onChange
+    onChange,
+    
 }
 ) => {
     const handleUpload = useCallback((result: any) => {
@@ -27,7 +30,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     onUpload={handleUpload}
     uploadPreset="zlalvxhl"
     options={{
-        maxFiles: 5
+        maxFiles: 1,
+        resourceType: "image",
+        folder: `ActivityImages/`
     }}
     >
         {({open}) =>{

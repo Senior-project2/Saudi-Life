@@ -12,6 +12,22 @@ import CustomButton from "@/components/CustomButton"
 import { signIn } from "next-auth/react"
 import useLoginModal from "@/app/hooks/useLoginModal"
 import { useEffect } from "react"
+import {z} from "zod"
+import {zodResolver} from "@hookform/resolvers/zod"
+const validPhoneNumberPrefixes = ['50', '53', '55', '58', '59', '54', '56', '570', '571', '572', '576', '577', '578'];
+
+const phoneNumberRegex = new RegExp(`^\\+966(${validPhoneNumberPrefixes.join('|')})\\d{7}$`);
+
+const registrationSchema = z.object({
+    name: z.string().nonempty("Name is required").min(2).max(30),
+    email: z.string().nonempty("Email is required").email("Invalid email format"),
+    password: z.string().nonempty("Password is required").min(5).max(20),
+    phoneNumber: z.string().optional().refine((val) => {
+        return val === undefined || (phoneNumberRegex.test(val) && val.length === 13);
+    }, {
+        message: `Phone number must be exactly 13 characters long, start with +966, and follow with these prefixes: ${validPhoneNumberPrefixes.join(', ')}`,
+    }),
+  });
 
 const RegisterModal = () => {
     const registerModal = useRegisterModal()
@@ -25,14 +41,16 @@ const RegisterModal = () => {
         register,
         handleSubmit,
         formState: {errors},
-        setValue
+        setValue,
+        reset
     } = useForm<FieldValues>({
+        resolver: zodResolver(registrationSchema),
         defaultValues: {
             name: "",
             email: "",
             password: "",
             role: "",
-            phoneNumber: "+996",
+            phoneNumber: "",
 
         }
         
@@ -42,6 +60,7 @@ const RegisterModal = () => {
 
     useEffect(() => {
         setValue("phoneNumber", phoneNumber);
+       
     }, [phoneNumber, setValue]);
 
     const handlePhoneNumberChange = (event: any) => {
@@ -52,11 +71,7 @@ const RegisterModal = () => {
     };
 
     const onSubmit: SubmitHandler<FieldValues> = (data) =>{
-        if (phoneNumber.length !== 13 && userRole === 'Local Citizen') {
-            toast.error("Phone number must be exactly 13 characters long.");
-            return;
-        }
-        
+        reset()
         const payload = { ...data, role: userRole };
         setIsLoading(true);
         axios.post('api/register', payload)
@@ -67,6 +82,7 @@ const RegisterModal = () => {
         })
         .catch((error) =>{
             toast.error("Somthing went wrong!")
+            
                 })
         .finally(() =>{
             setIsLoading(false)
@@ -91,6 +107,7 @@ const RegisterModal = () => {
         title="Welcome to Saudi Life"
         subtitle="Create an account to continue"
         />
+        
         <Input
         id="email"
         label="Email"
@@ -98,6 +115,7 @@ const RegisterModal = () => {
         register={register}
         errors={errors}
         required
+        
         />
         <Input
         id="name"

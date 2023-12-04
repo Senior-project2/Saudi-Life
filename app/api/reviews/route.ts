@@ -3,14 +3,14 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { content, userId, activityId } = body;
+  const { content, authorId, reviewedUserId } = body;
 
   try {
     const newReview = await prisma.review.create({
       data: {
         content,
-        userId,
-        activityId,
+        authorId,
+        reviewedUserId
       },
     });
 

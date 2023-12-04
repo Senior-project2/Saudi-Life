@@ -31,9 +31,8 @@ const UserImageUpload: React.FC<UserImageUploadProps> = ({
     const uploadOptions = {
         uploadPresent: "zlalvxhl",  
         maxFiles: 1,
-        
         resourceType: "image",
-        folder: `${userId}/`,
+        folder: `${userId}/UserImage/`,
         cropping: true,              
         croppingAspectRatio: 1,       
         croppingShowDimensions: true, 
@@ -46,7 +45,7 @@ const UserImageUpload: React.FC<UserImageUploadProps> = ({
   return (
     <CldUploadWidget
     onUpload={handleUpload}
-    uploadPreset="jhwudwoy"
+    
     options={
         
         uploadOptions

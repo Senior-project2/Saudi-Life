@@ -4,6 +4,7 @@ import EmptyState from '@/components/EmptyState';
 import UserPage from './UserPageClient';
 import getUserById from '@/app/actions/getUserById';
 import getActivitiesByUserId from '@/app/actions/getActivityByUserId';
+import getCurrentUser from '@/app/actions/getCurrentUser';
 interface IParams {
     userId?: string;
 
@@ -19,6 +20,8 @@ const UserProfilePage= async ({ params }: { params: IParams}) => {
         return null;
       }
     const userActivities = await getActivitiesByUserId({ userId: user.id });
+
+    const currentUser = await getCurrentUser();
     if (!user) {
         return (
             <ClientOnly>
@@ -30,8 +33,10 @@ const UserProfilePage= async ({ params }: { params: IParams}) => {
     return (
         <div>
             <UserPage 
-            currentUser={user}
-            activities={userActivities} />
+            user={user}
+            activities={userActivities} 
+            loggedInUser={currentUser}/>
+            
         </div>
     );
 };

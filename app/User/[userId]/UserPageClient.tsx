@@ -1,24 +1,36 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Container from "@/components/Container";
 import UserAvatar from "@/components/UserAvatar";
 import { SafeUser, SafeActivities } from "@/app/types";
 import ActivityCard from "@/components/activities/ActivityCard";
-import axios from "axios";
-import toast from "react-hot-toast";
+import ReviewModal from "@/components/modals/ReviewModal";
+import useDisplayReviewsModal from "@/app/hooks/useDisplayReviewsModal";
+import { set } from "date-fns";
 interface UserPageProps {
-  currentUser: SafeUser | null;
+  user: SafeUser | null;
   activities: SafeActivities[];
+  loggedInUser: SafeUser | null;
 }
 
-const UserPage: React.FC<UserPageProps> = (
-  { 
-    currentUser,
-    activities
+const UserPage: React.FC<UserPageProps> = ({ 
+    user,
+    activities,
+    loggedInUser
    }) => {
-  if (!currentUser) {
+  if (!user) {
     return null;
   }
+  const [isReviewsModalOpen, setIsReviewsModalOpen] = useState(false);
+  const handleOpenReviews = () => {
+    setIsReviewsModalOpen(true);
+  };
+  const handleCloseReviews = () => {
+    setIsReviewsModalOpen(false);
+  }
+  const { onOpen } = useDisplayReviewsModal();
+
+
   
   
 
@@ -27,7 +39,7 @@ const UserPage: React.FC<UserPageProps> = (
       <div className="flex flex-col gap-4 p-4 rounded-lg shadow-md">
         <div className="flex items-center gap-4">
           <div className="">
-            <UserAvatar src={currentUser?.image} />
+            <UserAvatar src={user?.image} />
           </div>
           <div
             className="
@@ -43,7 +55,7 @@ const UserPage: React.FC<UserPageProps> = (
             items-center 
             gap-2"
             >
-              {currentUser?.name}
+              {user?.name}
             </div>
 
             <div
@@ -51,14 +63,14 @@ const UserPage: React.FC<UserPageProps> = (
             font-light 
           text-neutral-500"
             >
-              {currentUser?.email}
+              {user?.email}
             </div>
             <div
               className="
             font-light 
           text-neutral-500"
             >
-              {currentUser?.phoneNumber}
+              {user?.phoneNumber}
             </div>
           </div>
         </div>
@@ -72,8 +84,8 @@ const UserPage: React.FC<UserPageProps> = (
             font-light
             text-neutral-500"
         >
-          <div> {currentUser.description 
-                  ? currentUser.description 
+          <div> {user.description 
+                  ? user.description 
                     :"No description available for this user."}</div>
         </div>
         <hr />
@@ -92,7 +104,7 @@ const UserPage: React.FC<UserPageProps> = (
         {activities.length > 0 ? activities.map(activity => (
           <ActivityCard
             key={activity.id}
-            currentUser={currentUser}
+            currentUser={user}
             data={activity}
           />
         )) : (
@@ -100,7 +112,33 @@ const UserPage: React.FC<UserPageProps> = (
         )}
       </div>
         <hr />
-        <div>view reviews here</div>
+        <div>
+          {loggedInUser && (
+            <ReviewModal
+            authorId={loggedInUser.id}
+            reviewedUserId={user.id}
+            />
+            
+          )}
+        </div>
+        <div className="
+            text-neutral-500
+            text-center
+            mt-4
+            font-light">
+               
+                <div className="
+                text-neutral-800
+                cursor-pointer
+                hover:underline"
+                onClick={onOpen}
+                >
+                    View reviews of the user
+                </div>
+              
+               
+
+            </div>
       </div>
     </Container>
   );
