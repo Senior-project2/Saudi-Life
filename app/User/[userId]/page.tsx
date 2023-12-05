@@ -5,6 +5,7 @@ import UserPage from './UserPageClient';
 import getUserById from '@/app/actions/getUserById';
 import getActivitiesByUserId from '@/app/actions/getActivityByUserId';
 import getCurrentUser from '@/app/actions/getCurrentUser';
+import getUserReviews from '@/app/actions/getUserReviews';
 interface IParams {
     userId?: string;
 
@@ -22,6 +23,7 @@ const UserProfilePage= async ({ params }: { params: IParams}) => {
     const userActivities = await getActivitiesByUserId({ userId: user.id });
 
     const currentUser = await getCurrentUser();
+    const userReviews = await getUserReviews({ userId: user.id });
     if (!user) {
         return (
             <ClientOnly>
@@ -35,7 +37,9 @@ const UserProfilePage= async ({ params }: { params: IParams}) => {
             <UserPage 
             user={user}
             activities={userActivities} 
-            loggedInUser={currentUser}/>
+            loggedInUser={currentUser}
+            reviews={userReviews}
+            />
             
         </div>
     );

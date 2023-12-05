@@ -6,17 +6,21 @@ import { SafeUser, SafeActivities } from "@/app/types";
 import ActivityCard from "@/components/activities/ActivityCard";
 import ReviewModal from "@/components/modals/ReviewModal";
 import useDisplayReviewsModal from "@/app/hooks/useDisplayReviewsModal";
+import ReviewDisplayModal from "@/components/modals/ReviewDisplayModal";
+import { SafeReviews } from "@/app/types";
 import { set } from "date-fns";
 interface UserPageProps {
   user: SafeUser | null;
   activities: SafeActivities[];
   loggedInUser: SafeUser | null;
+  reviews: SafeReviews[];
 }
 
 const UserPage: React.FC<UserPageProps> = ({ 
     user,
     activities,
-    loggedInUser
+    loggedInUser,
+    reviews
    }) => {
   if (!user) {
     return null;
@@ -135,6 +139,9 @@ const UserPage: React.FC<UserPageProps> = ({
                 >
                     View reviews of the user
                 </div>
+                <ReviewDisplayModal
+                reviews={reviews}
+                />
               
                
 

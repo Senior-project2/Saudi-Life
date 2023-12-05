@@ -37,7 +37,8 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
     const [numberOfGuests, setNumberOfGuests] = useState(1);
 
 
-    const onCreateBooking = useCallback(() =>{
+    const onCreateBooking = 
+    useCallback(() =>{
         if(!currentUser){
             return loginModal.onOpen()
             

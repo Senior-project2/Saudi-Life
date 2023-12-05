@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Modal from './Modal';
 import Input from '@/components/Input';
-import CustomButton from '@/components/CustomButton';
-import Heading from '@/components/Heading';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import useResetPasswordModal from '@/app/hooks/usResetPasswordModal';
