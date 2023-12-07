@@ -69,13 +69,17 @@ const UserPage: React.FC<UserPageProps> = ({
             >
               {user?.email}
             </div>
-            <div
-              className="
-            font-light 
-          text-neutral-500"
-            >
-              {user?.phoneNumber}
-            </div>
+            <div 
+    className="font-light text-neutral-500 cursor-pointer hover:text-neutral-700 underline "
+    onClick={() => {
+        if (user?.phoneNumber) {
+            const phoneNumber = user.phoneNumber.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${phoneNumber}`, '_blank');
+        }
+    }}
+>
+    {user?.phoneNumber}
+</div>
           </div>
         </div>
         <hr />
@@ -121,6 +125,7 @@ const UserPage: React.FC<UserPageProps> = ({
             <ReviewModal
             authorId={loggedInUser.id}
             reviewedUserId={user.id}
+            existingReviews={reviews}
             />
             
           )}
@@ -139,14 +144,17 @@ const UserPage: React.FC<UserPageProps> = ({
                 >
                     View reviews of the user
                 </div>
-                <ReviewDisplayModal
-                reviews={reviews}
-                />
+                
               
                
 
             </div>
+            
       </div>
+      <ReviewDisplayModal
+                reviews={reviews}
+                currentUser={loggedInUser}
+                />
     </Container>
   );
 };

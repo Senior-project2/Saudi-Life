@@ -278,6 +278,12 @@ bodyContent = (
               disabled={isLoading}
               {...register('activityDate', { required: true })}
             />
+            <input
+              type="time"
+              id="activityTime"
+              disabled={isLoading}
+              {...register('activityTime', { required: "Time is required" })}
+            />
             
           </div>
         );
