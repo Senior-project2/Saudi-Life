@@ -13,6 +13,9 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import ActivityReservation from '@/components/activities/ActivityReservation'
 import TotalPriceCounter from '@/components/TotalPriceCounter'
+import { parse, format, parseISO, isPast } from 'date-fns'
+import EmptyState from '@/components/EmptyState'
+
 
 
 
@@ -77,6 +80,7 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
         return categories.find((item) =>
          item.label === activity.category)
     }, [activity.category])
+   
   return (
     <Container>
         <div className="max-w-screen-lg
@@ -106,6 +110,7 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
                     guestCount={activity.guestCount}
                     locationValue={activity.locationValue}
                     activityDate={activity.activityDate ? activity.activityDate.toISOString().split('T')[0] : ''}
+                    activityTime={activity.activityTime || ""}
                     />
                     <div className="order-first
                     mb-10
@@ -118,6 +123,8 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
                         onSubmit={onCreateBooking}
                         disabled={isLoading}
                         maxGuests={activity.guestCount}
+                      
+
                         />
                           <TotalPriceCounter
                     title="Number of Guests"

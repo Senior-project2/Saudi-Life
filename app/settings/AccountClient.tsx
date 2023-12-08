@@ -13,6 +13,24 @@ import axios from 'axios';
 import useResetPasswordModal from '../hooks/usResetPasswordModal';
 import ResetPasswordModal from '@/components/modals/resetPasswordModal';
 import UserImageUpload from '@/components/UserImageUpload';
+import {z} from "zod"
+import {zodResolver} from "@hookform/resolvers/zod"
+
+const validPhoneNumberPrefixes = ['50', '53', '55', '58', '59', '54', '56', '570', '571', '572', '576', '577', '578'];
+
+const phoneNumberRegex = new RegExp(`^\\+966(${validPhoneNumberPrefixes.join('|')})\\d{7}$`);
+
+const settingsSchema = z.object({
+    name: z.string().nonempty("Name is required").min(2).max(30),
+    email: z.string().nonempty("Email is required").email("Invalid email format"),
+    phoneNumber: z.string().nonempty().refine((val) => {
+        return val === undefined || (phoneNumberRegex.test(val) && val.length === 13);
+    }, {
+        message: `Phone number must be exactly 13 characters long, start with +966, and follow with these prefixes: ${validPhoneNumberPrefixes.join(', ')}`,
+    }),
+    image: z.string().optional(),
+    description: z.string().min(10).max(200).trim().transform((str) => escape(str.trim()))
+  });
 
 
 
@@ -30,6 +48,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
         setValue,
         watch
     } = useForm<FieldValues>({
+        resolver: zodResolver(settingsSchema),
         defaultValues: {
             name: currentUser?.name || '',
             email: currentUser?.email || '',

@@ -96,7 +96,8 @@ export const BookModal =   () => {
             price:0,
             title: '',
             description: '',
-            activityDate: ''
+            activityDate: '',
+            activityTime: ''
     }});
 
     const category = watch('category');
@@ -272,18 +273,24 @@ bodyContent = (
         bodyContent = (
           <div className="flex flex-col gap-8">
             <Heading title="Choose the date for your activity" subtitle="Select a date" />
-            <input
-              type="date"
-              id="activityDate"
-              disabled={isLoading}
-              {...register('activityDate', { required: true })}
-            />
-            <input
-              type="time"
-              id="activityTime"
-              disabled={isLoading}
-              {...register('activityTime', { required: "Time is required" })}
-            />
+            <Input
+          id="activityDate"
+          label="Activity Date"
+          type="date"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required={true}
+        />
+        <Input
+          id="activityTime"
+          label="Activity Time"
+          type="time"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required={true}
+        />
             
           </div>
         );

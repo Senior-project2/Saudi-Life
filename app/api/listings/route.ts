@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server"
 import prisma from "@/libs/prismadb"
 import getCurrentUser from "@/app/actions/getCurrentUser"
+import set from "date-fns/set"
 
 import { z } from 'zod';
 
@@ -14,7 +15,8 @@ const listingSchema = z.object({
     price: z.string().nonempty("Price is required").transform((price) => parseInt(price, 10)),
     title: z.string().nonempty("Title is required"),
     description: z.string().nonempty("Description is required"),
-    activityDate: z.string().optional().refine(val => val ? new Date(val).toString() !== 'Invalid Date' : true, "Activity date is required and must be a valid date").transform(val => val ? new Date(val) : null),
+    activityDate: z.string().nonempty().refine(val => val ? new Date(val).toString() !== 'Invalid Date' : true, "Activity date is required and must be a valid date").transform(val => val ? new Date(val) : null),
+    activityTime: z.string().nonempty()
 });
 
 export default listingSchema;
@@ -39,7 +41,8 @@ export async function POST(
         price,
         title,
         description,
-        activityDate
+        activityDate,
+        activityTime
     } = body;
     const parsedData = listingSchema.parse(body);
     const listings = await prisma.listings.create({
@@ -52,7 +55,8 @@ export async function POST(
             title: parsedData.title,
             description: parsedData.description,
             userId: currentUser.id,
-            activityDate: parsedData.activityDate ? new Date(parsedData.activityDate) : null
+            activityDate: parsedData.activityDate ? new Date(parsedData.activityDate) : null,
+            activityTime: parsedData.activityTime,
         }
     })
     if(listings){

@@ -60,6 +60,7 @@ model User {
     userId String @db.ObjectId 
     price Int
     activityDate DateTime?
+    activityTime String?
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   bookings Bookings[]
  }

@@ -7,6 +7,8 @@ import ActivityCategory from "./ActivityCategory"
 import Map from "../Map"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import {parse, format, parseISO, isPast} from 'date-fns'
+import EmptyState from "../EmptyState"
 
 
 
@@ -22,10 +24,13 @@ interface ActivityInfoProps {
     } | undefined
     activityDate: string
     activityId: string
+    activityTime: string
+    
     
     
     
 }
+
 
 const ActivityInfo: React.FC<ActivityInfoProps> = ({
     user,
@@ -34,16 +39,17 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
     locationValue,
     category,
     activityDate,
+    activityTime
     
     
     
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-   
     const {getByValue} = useSaudiStates()
     const coordinateslat = getByValue(locationValue)?.latitude
     const coordinateslng = getByValue(locationValue)?.longitude
-   
+    const formattedTime = format(parse(activityTime, 'HH:mm', new Date()), 'h:mma');
+
     const router = useRouter()
     const handleModalClose = () => {
         setIsModalOpen(false);
@@ -90,7 +96,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
 
         </div>
         <div className=" text-lg font-light text-neutral-500">
-        {activityDate}
+        {activityDate} {formattedTime}
            
 
         </div>

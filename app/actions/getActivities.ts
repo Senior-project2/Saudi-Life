@@ -5,13 +5,14 @@ export interface IActivityParams{
     guestCount?: number;    
     locationValue?: string;
     category?: string;
+    activityDate?: string;
 }
 
 export default async function getActivities(
     params: IActivityParams
 ) {
 try{
-    const {userId, guestCount, locationValue, category} = params
+    const {userId, guestCount, locationValue, category, activityDate} = params
 
     let query: any = {}
 
@@ -23,6 +24,9 @@ try{
     }
     if(locationValue){
         query.locationValue = locationValue
+    }
+    if(activityDate){
+        query.activityDate = activityDate
     }
     if(guestCount){
         query.guestCount = {
@@ -42,7 +46,6 @@ try{
         ...activity,
         createdAt: activity.createdAt.toISOString(),
         activityDate: activity.activityDate ? activity.activityDate.toISOString() : 'Default Date',
-
         
     }))
     return safeActivities
