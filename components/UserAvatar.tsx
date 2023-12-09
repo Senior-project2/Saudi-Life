@@ -14,7 +14,6 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
     className="rounded-full"
     height={100}
     width={100}
-    
     alt="UserAvatar"
     src={src || "/placeholder.png"}
     

@@ -4,23 +4,34 @@ import EmptyState from "@/components/EmptyState";
 import getActivities, { IActivityParams } from "./actions/getActivities";
 import ActivityCard from "@/components/activities/ActivityCard";
 import getCurrentUser from "./actions/getCurrentUser";
+import { parseISO, isPast } from 'date-fns';
 
 interface HomeProps{
   searchParams: IActivityParams
 }
 const Home = async ( {searchParams}: HomeProps) => {
-  const activites = await getActivities(searchParams);
+  const activities = await getActivities(searchParams);
   const isEmpty = true;
   const currentUser = await getCurrentUser()
 
-  if(activites.length === 0){
+  if(activities.length === 0){
     return(
       <ClientOnly>
         <EmptyState showReset/>
       </ClientOnly>
     )
   }
-  //throw new Error("somthing went wrong")
+  const filteredActivities = activities.filter((activity) => {
+    let activityDateTime;
+    if (activity.activityDate && activity.activityTime) {
+      // Combine date and time
+      const datePart = activity.activityDate.split('T')[0];
+      const combinedDateTime = `${datePart}T${activity.activityTime}`;
+      activityDateTime = parseISO(combinedDateTime);
+    }
+    // Check if activity is not past
+    return activityDateTime ? !isPast(activityDateTime) : true;
+  });
   return (
     <ClientOnly>
       <Container>
@@ -34,7 +45,7 @@ const Home = async ( {searchParams}: HomeProps) => {
      xl:grid-cols-5
      2xl:grid-cols-6
      gap-8">
-        {activites.map((listings) => {
+        {filteredActivities.map((listings) => {
           return(
            <ActivityCard
            currentUser={currentUser}

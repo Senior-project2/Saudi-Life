@@ -48,7 +48,19 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
     const {getByValue} = useSaudiStates()
     const coordinateslat = getByValue(locationValue)?.latitude
     const coordinateslng = getByValue(locationValue)?.longitude
-    const formattedTime = format(parse(activityTime, 'HH:mm', new Date()), 'h:mma');
+    let formattedTime = '';
+
+    try {
+        if (activityTime) {
+            const parsedTime = parse(activityTime, 'HH:mm', new Date());
+            formattedTime = format(parsedTime, 'h:mma');
+        } else {
+            formattedTime = 'Time not available'; //default message if time is null orundefined
+        }
+    } catch (error) {
+        console.error('Error parsing time:', error);
+        formattedTime = 'Invalid Time'; //set to a default message if parsing fails
+    }
 
     const router = useRouter()
     const handleModalClose = () => {
@@ -77,8 +89,17 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
                 <div>
                     {guestCount} guests
                 </div>
+                <div
+                className="font-light text-neutral-500 cursor-pointer hover:text-neutral-700 underline"
+                 onClick={() => {
+                    if (user?.phoneNumber) {
+                        const phoneNumber = user.phoneNumber.replace(/[^0-9]/g, '');
+                        window.open(`https://wa.me/${phoneNumber}`, '_blank');
+                    }
+                }}
+                >
                 {user?.phoneNumber && <span>  {user.phoneNumber}</span>}
-
+                </div>
             </div>
         </div>
         <hr/>

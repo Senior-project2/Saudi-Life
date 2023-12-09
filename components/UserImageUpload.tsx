@@ -2,9 +2,9 @@
 import React from 'react'
 import{CldUploadWidget} from 'next-cloudinary'
 import {useCallback} from 'react'
+import Image from 'next/image'
 import {MdOutlineAddPhotoAlternate} from 'react-icons/md'
 import Avatar from './Avatar'
-import SettingsAvatar from './navbar/SettingsAvatar'
 import { RiEdit2Line } from "react-icons/ri";
 
 declare global{
@@ -15,7 +15,7 @@ interface UserImageUploadProps{
     onChange: (value: string) => void;
     value: string
     userId: string
-    isEditable: boolean
+    isEditable?: boolean
 }
 
 const UserImageUpload: React.FC<UserImageUploadProps> = ({
@@ -28,6 +28,7 @@ const UserImageUpload: React.FC<UserImageUploadProps> = ({
     const handleUpload = useCallback((result: any) => {
         onChange(result.info.secure_url)
     }, [onChange])
+    
     const uploadOptions = {
         uploadPresent: "zlalvxhl",  
         maxFiles: 1,
@@ -42,6 +43,7 @@ const UserImageUpload: React.FC<UserImageUploadProps> = ({
         secure: true,
         
     };
+    const imageSrc = value || "/placeholder.png";
   return (
     <CldUploadWidget
     onUpload={handleUpload}
@@ -60,24 +62,32 @@ const UserImageUpload: React.FC<UserImageUploadProps> = ({
                 p-5
                 flex
                 flex-col
-                items-center
-                justify-center
+                
                 text-neutral-600
                 "
                 >
                     
-                    {value && (
-                        <div
-                        className="absolute inset-0 w-full h-full"
-                        >
+                    {imageSrc && (
+                         <div
+                         className="absolute "
+                         >
+                             <Image
+                             className="rounded-full"
+                             alt="Upload Image"
+                             width="60"
+                             height="60"
+                             style={{}}
+                             src={imageSrc}
+                             />
+                              {isEditable && (
+            <div className="absolute bottom-0 right-0 p-2">
+              <RiEdit2Line size={16} className="text-white bg-gray-700 rounded-full" />
+            </div>
+          )}
+                          </div>
+                          
                             
                         
-                    
-                            <SettingsAvatar
-                            src={value}
-                            />
-                            
-                         </div>
                     )}
                     
 

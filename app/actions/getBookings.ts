@@ -39,7 +39,7 @@ export default async function getBookings(
         listing:{
             ...bookings.listing,
             createdAt: bookings.listing.createdAt.toISOString()
-        }
+        },
     }))
     return safeBookings;
 }

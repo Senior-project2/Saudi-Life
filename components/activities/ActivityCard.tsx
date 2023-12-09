@@ -19,6 +19,7 @@ interface ActivityCardProps{
     actionLabel?: string
     actionID?: string
     currentUser?: SafeUser | null;
+    expired?: string
     
 }
 
@@ -29,7 +30,8 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
     disabled,
     actionLabel,
     actionID = '',
-    currentUser
+    currentUser,
+    expired
 
 }) => {
     const router = useRouter()
@@ -132,6 +134,13 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
                 onClick={ handleCancel }
                 />
             )}
+            <div className="
+            font-light
+          text-red-600
+            ">
+                {expired}
+
+            </div>
 
         </div>
 

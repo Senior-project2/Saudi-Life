@@ -27,23 +27,27 @@ const ActivityPage = async ({ params }: { params: IParams}) => {
     </ClientOnly>
   )
   }
-  const activityDateTime = activity.activityDate && activity.activityTime
-  ? parseISO(`${activity.activityDate}T${activity.activityTime}`)
-  : null;
+  let activityDateTime;
+  if (activity.activityDate && activity.activityTime) {
+    //extract just the date part from the ISO string
+    const datePart = activity.activityDate.toISOString().split('T')[0];
+    //combine date part with activity time
+    const combinedDateTime = `${datePart}T${activity.activityTime}`;
+    activityDateTime = parseISO(combinedDateTime);
+  }
 
-// Check if the activity date and time are in the past
-const isActivityPast = activityDateTime ? isPast(activityDateTime) : false;
-if(!isActivityPast){
-  return(
-    <ClientOnly>
-      <EmptyState 
-      title="Activity has expired"
-      subtitle="This activity has been expired."
-      />
-    </ClientOnly>
-  )
-
-}
+  //check if the activity date and time are in the past
+  const isActivityPast = activityDateTime ? isPast(activityDateTime) : false;
+  if (isActivityPast) {
+    return (
+      <ClientOnly>
+        <EmptyState 
+          title="Activity has expired"
+          subtitle="This activity has been expired."
+        />
+      </ClientOnly>
+    );
+  }
   return (
    <div>
       <ActivityClient

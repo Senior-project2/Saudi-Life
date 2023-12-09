@@ -7,6 +7,7 @@ import { useCallback, useState } from "react"
 import axios from "axios"
 import toast from "react-hot-toast"
 import ActivityCard from "@/components/activities/ActivityCard"
+import { parseISO, isPast } from "date-fns"
 
 interface MyActivityesClientProps {
     activities: SafeActivities[]
@@ -19,6 +20,18 @@ const MyActivityesClient: React.FC<MyActivityesClientProps> = ({
     activities,
     currentUser
 }) => {
+    const filteredActivities = activities.filter((activity) => {
+        let activityDateTime;
+        if (activity.activityDate && activity.activityTime) {
+            const datePart = typeof activity.activityDate === 'string' 
+                ? parseISO(activity.activityDate).toISOString().split('T')[0] 
+                : activity.activityDate.toISOString().split('T')[0];
+            const combinedDateTime = `${datePart}T${activity.activityTime}`;
+            activityDateTime = parseISO(combinedDateTime);
+        }
+        const expired = activityDateTime ? !isPast(activityDateTime) : true;
+        return expired
+    });
     const router = useRouter()
     const[deletingId, setDeletingId] = useState('')
     const onCancel = useCallback((id: string) => {
@@ -52,19 +65,33 @@ const MyActivityesClient: React.FC<MyActivityesClientProps> = ({
         2xl:grid-cols-6
         gap-8
         ">
-            {activities.map((activity) =>(
-                <ActivityCard
-                key={activity.id}
-                data={activity}
-                actionID={activity.id}
-                onAction={onCancel}
-                disabled={deletingId === activity.id}
-                actionLabel="Cancel activity"
-                currentUser={currentUser}
-                />
-            ))}
-        </div>
-    </Container>
+            
+            {activities.map((activity) => {
+                    let activityDateTime;
+                    if (activity.activityDate && activity.activityTime) {
+                        const datePart = typeof activity.activityDate === 'string' 
+                            ? parseISO(activity.activityDate).toISOString().split('T')[0] 
+                            : activity.activityDate.toISOString().split('T')[0];
+                        const combinedDateTime = `${datePart}T${activity.activityTime}`;
+                        activityDateTime = parseISO(combinedDateTime);
+                    }
+                    const expired = activityDateTime ? isPast(activityDateTime) : false;
+
+                    return (
+                        <ActivityCard
+                            key={activity.id}
+                            data={activity}
+                            actionID={activity.id}
+                            onAction={onCancel}
+                            disabled={deletingId === activity.id || expired}
+                            actionLabel={!expired ? "Cancel activity" : undefined}
+                            currentUser={currentUser}
+                            expired={!expired ? undefined : "Expired"}
+                        />
+                    );
+                })}
+            </div>
+        </Container>
   )
 }
 
