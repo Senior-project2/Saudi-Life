@@ -41,7 +41,7 @@ export default async function getBookings(
             ...bookings.listing,
             createdAt: bookings.listing.createdAt.toISOString()
         },
-        userName: bookings.user.name,
+        userName: bookings.user.name || '',
     }))
     return safeBookings;
 }

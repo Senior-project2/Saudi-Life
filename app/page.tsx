@@ -24,12 +24,11 @@ const Home = async ( {searchParams}: HomeProps) => {
   const filteredActivities = activities.filter((activity) => {
     let activityDateTime;
     if (activity.activityDate && activity.activityTime) {
-      // Combine date and time
       const datePart = activity.activityDate.split('T')[0];
       const combinedDateTime = `${datePart}T${activity.activityTime}`;
       activityDateTime = parseISO(combinedDateTime);
     }
-    // Check if activity is not past
+    //check if activity is not past
     return activityDateTime ? !isPast(activityDateTime) : true;
   });
   return (
