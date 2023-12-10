@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"
 import ClientOnly from "@/components/ClientOnly";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
@@ -5,13 +6,13 @@ import getActivities, { IActivityParams } from "./actions/getActivities";
 import ActivityCard from "@/components/activities/ActivityCard";
 import getCurrentUser from "./actions/getCurrentUser";
 import { parseISO, isPast } from 'date-fns';
+import { GetServerSideProps } from "next";
 
 interface HomeProps{
   searchParams: IActivityParams
 }
 const Home = async ( {searchParams}: HomeProps) => {
   const activities = await getActivities(searchParams);
-  const isEmpty = true;
   const currentUser = await getCurrentUser()
 
   if(activities.length === 0){
