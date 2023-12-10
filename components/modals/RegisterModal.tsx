@@ -12,22 +12,10 @@ import CustomButton from "@/components/CustomButton"
 import { signIn } from "next-auth/react"
 import useLoginModal from "@/app/hooks/useLoginModal"
 import { useEffect } from "react"
-import {z} from "zod"
-import {zodResolver} from "@hookform/resolvers/zod"
-const validPhoneNumberPrefixes = ['50', '53', '55', '58', '59', '54', '56', '570', '571', '572', '576', '577', '578'];
+import ReactFlagsSelect from "react-flags-select"
+import { CountryCode, getCountryCallingCode } from 'libphonenumber-js'
 
-const phoneNumberRegex = new RegExp(`^\\+966(${validPhoneNumberPrefixes.join('|')})\\d{7}$`);
 
-const registrationSchema = z.object({
-    name: z.string().nonempty("Name is required").min(2).max(30),
-    email: z.string().nonempty("Email is required").email("Invalid email format"),
-    password: z.string().nonempty("Password is required").min(5).max(20),
-    phoneNumber: z.string().optional().refine((val) => {
-        return val === undefined || (phoneNumberRegex.test(val) && val.length === 13);
-    }, {
-        message: `Phone number must be exactly 13 characters long, start with +966, and follow with these prefixes: ${validPhoneNumberPrefixes.join(', ')}`,
-    }),
-  });
 
 const RegisterModal = () => {
     const registerModal = useRegisterModal()
@@ -35,44 +23,68 @@ const RegisterModal = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [userRole, setUserRole] = useState('');
     const [phoneNumber, setPhoneNumber] = useState("+966");
+    const [flagSelected, setFlagSelected] = useState("");
+    const [touristPhoneNumber, setTouristPhoneNumber] = useState('');
+
+ 
 
 
     const{
         register,
         handleSubmit,
         formState: {errors},
-        setValue,
-        reset
+        setValue
     } = useForm<FieldValues>({
-        resolver: zodResolver(registrationSchema),
         defaultValues: {
             name: "",
             email: "",
             password: "",
             role: "",
-            phoneNumber: "",
+            phoneNumber: "+996",
 
         }
-        
+
 
 
     });
 
     useEffect(() => {
         setValue("phoneNumber", phoneNumber);
-       
     }, [phoneNumber, setValue]);
 
     const handlePhoneNumberChange = (event: any) => {
-        const value = event.target.value;
-        if (value.length <= 13 && value.startsWith("+966")) {
-            setPhoneNumber(value); 
+        const inputValue = event.target.value;
+        let countryCode = '';
+    
+        if (userRole === 'Local Citizen') {
+            countryCode = "+966";
+            setPhoneNumber(inputValue); //update the local citizen phone number
+        } else if (userRole === 'Tourist') {
+            countryCode = "+" + getCountryCallingCode(flagSelected as CountryCode); //get the country code for the selected flag
+            const fullNumber = countryCode + inputValue.slice(countryCode.length); //set new input to the country code
+            setTouristPhoneNumber(fullNumber); //update the tourist phone number
         }
     };
+    
+    const handleCountryChange = (code: any) => {
+        const dialCode = getCountryCallingCode(code);
+    setFlagSelected(code);
+    setTouristPhoneNumber("+" + dialCode);
+    };
+    
+
+    
 
     const onSubmit: SubmitHandler<FieldValues> = (data) =>{
-        reset()
-        const payload = { ...data, role: userRole };
+        let finalPhoneNumber = userRole === 'Local Citizen' ? phoneNumber : touristPhoneNumber;
+
+    if (finalPhoneNumber.length !== 13 && userRole === 'Local Citizen') {
+        toast.error("Phone number must be exactly 13 characters long.");
+        return;
+    }
+
+    const payload = { ...data, role: userRole, phoneNumber: finalPhoneNumber };
+    setIsLoading(true);
         setIsLoading(true);
         axios.post('api/register', payload)
         .then(() =>{
@@ -82,16 +94,22 @@ const RegisterModal = () => {
         })
         .catch((error) =>{
             toast.error("Somthing went wrong!")
-            
                 })
         .finally(() =>{
             setIsLoading(false)
         })
     }
     const handleRoleChange = (event: any) => {
-        setUserRole(event.target.value);
-      };
+        const selectedRole = event.target.value;
+        setUserRole(selectedRole);
     
+        if (selectedRole === 'Local Citizen') {
+            setPhoneNumber("+966");
+        } else if (selectedRole === 'Tourist') {
+            setPhoneNumber("");
+        }
+      };
+
     const toggle = useCallback(() => {
         registerModal.onClose();
         loginModal.onOpen();
@@ -107,7 +125,6 @@ const RegisterModal = () => {
         title="Welcome to Saudi Life"
         subtitle="Create an account to continue"
         />
-        
         <Input
         id="email"
         label="Email"
@@ -115,7 +132,6 @@ const RegisterModal = () => {
         register={register}
         errors={errors}
         required
-        
         />
         <Input
         id="name"
@@ -152,10 +168,29 @@ const RegisterModal = () => {
                     value={phoneNumber}
                     onChange={handlePhoneNumberChange}
         />)}
-        
-        
-        
-        
+        {userRole === 'Tourist' && (
+    <>
+        <ReactFlagsSelect
+            selected={flagSelected}
+            onSelect={(code) => handleCountryChange(code)}
+        />
+        <Input
+            id="touristPhoneNumber"
+            label="Phone Number"
+            type="text"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
+            value={touristPhoneNumber}
+            onChange={handlePhoneNumberChange}
+        />
+    </>
+)}
+
+
+
+
         </div>
     )
 
@@ -198,7 +233,7 @@ const RegisterModal = () => {
 
 
     )
-    
+
   return (
     <Modal
     disabled={isLoading}

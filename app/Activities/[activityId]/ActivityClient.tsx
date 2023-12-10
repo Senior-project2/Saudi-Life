@@ -33,13 +33,12 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
     currentUser,
     bookings = [],
 }) => {
+
     const loginModal = useLoginModal()
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [totalPrice, setTotalPrice] = useState(activity.price)
     const [numberOfGuests, setNumberOfGuests] = useState(1);
-
-
     const onCreateBooking = 
     useCallback(() =>{
         if(!currentUser){
@@ -80,7 +79,11 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
         return categories.find((item) =>
          item.label === activity.category)
     }, [activity.category])
-   
+
+    const totalBookedGuests = useMemo(() => {
+        return bookings.reduce((total, booking) => total + booking.numberOfGuests, 0);
+    }, [bookings]);
+
   return (
     <Container>
         <div className="max-w-screen-lg
@@ -111,6 +114,7 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
                     locationValue={activity.locationValue}
                     activityDate={activity.activityDate ? activity.activityDate.toISOString().split('T')[0] : ''}
                     activityTime={activity.activityTime || ""}
+                    numberOfBookings={totalBookedGuests.toString()}
                     />
                     <div className="order-first
                     mb-10

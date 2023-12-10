@@ -25,6 +25,7 @@ interface ActivityInfoProps {
     activityDate: string
     activityId: string
     activityTime: string
+    numberOfBookings: string
     
     
     
@@ -39,7 +40,10 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
     locationValue,
     category,
     activityDate,
-    activityTime
+    activityTime,
+    activityId,
+    numberOfBookings,
+
     
     
     
@@ -49,6 +53,8 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
     const coordinateslat = getByValue(locationValue)?.latitude
     const coordinateslng = getByValue(locationValue)?.longitude
     let formattedTime = '';
+    const guestInfo = `${numberOfBookings}/${guestCount}`;
+
 
     try {
         if (activityTime) {
@@ -87,7 +93,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({
             text-neutral-500
             ">
                 <div>
-                    {guestCount} guests
+                    {guestInfo} guests
                 </div>
                 <div
                 className="font-light text-neutral-500 cursor-pointer hover:text-neutral-700 underline"
