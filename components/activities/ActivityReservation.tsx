@@ -1,7 +1,6 @@
 "use client"
 
 import CustomButton from "../CustomButton"
-import { parseISO, isPast } from "date-fns"
 
 
 interface ActivityReservationProps {
@@ -11,6 +10,7 @@ interface ActivityReservationProps {
     onSubmit: () => void
     disabled?: boolean
     maxGuests: number
+    totalBookedGuests: number
 
 
 }
@@ -22,9 +22,11 @@ const ActivityReservation: React.FC<ActivityReservationProps> = ({
     onSubmit,
     disabled,
     maxGuests,
+    totalBookedGuests
   
 }) => {
-    const isBookingFull = numberOfGuests > maxGuests;
+    const isBookingFull = totalBookedGuests >= maxGuests;
+    
    
     
   return (
@@ -70,7 +72,6 @@ const ActivityReservation: React.FC<ActivityReservationProps> = ({
         <div className="p-4">
              
                 <CustomButton
-                disabled={disabled || isBookingFull}
                 label="Book Activity"
                 onClick={onSubmit}
                 />

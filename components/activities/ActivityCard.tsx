@@ -20,6 +20,7 @@ interface ActivityCardProps{
     actionID?: string
     currentUser?: SafeUser | null;
     expired?: string
+    guestName?:string
     
 }
 
@@ -31,7 +32,8 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
     actionLabel,
     actionID = '',
     currentUser,
-    expired
+    expired,
+    guestName
 
 }) => {
     const router = useRouter()
@@ -61,7 +63,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
     cursor-pointer
     group
     "
-    onClick={() => router.push(`/Activities/${data.id}`)}>
+    >
         <div className="flex flex-col 
         gap-2
         w-full">
@@ -70,7 +72,8 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
             relative
             overflow-hidden
             rounded-xl
-            ">
+            "
+            onClick={() => router.push(`/Activities/${data.id}`)}>
                 <Image
                 fill
                 alt="Activity Image"
@@ -133,7 +136,13 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
                 label={actionLabel}
                 onClick={ handleCancel }
                 />
-            )}
+                
+            ) }
+            {guestName && (
+    <div className="cursor-pointer" onClick={() => router.push(`/User/${booking?.userId}`)}>
+        {"Made by " + guestName}
+    </div>
+)}
             <div className="
             font-light
           text-red-600

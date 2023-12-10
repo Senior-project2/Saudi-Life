@@ -49,12 +49,16 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
             toast.error("You can't book your own activity!");
             return; 
         }
+        if(totalBookedGuests >= activity.guestCount){
+            toast.error("This activity is fully booked!");
+            return
+        }
         setIsLoading(true)
         axios.post('/api/bookings', {totalPrice, activityId: activity?.id, numberOfGuests
      })
         .then(() => {
             toast.success('Booking created successfully')
-            //redirect to bookings
+            router.refresh()
             router.push('/booking')
         })
         .catch(() =>{
@@ -127,7 +131,7 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
                         onSubmit={onCreateBooking}
                         disabled={isLoading}
                         maxGuests={activity.guestCount}
-                      
+                        totalBookedGuests={totalBookedGuests}
 
                         />
                           <TotalPriceCounter

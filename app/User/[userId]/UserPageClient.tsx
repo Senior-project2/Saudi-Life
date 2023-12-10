@@ -40,49 +40,34 @@ const UserPage: React.FC<UserPageProps> = ({
 
   return (
     <Container>
-      <div className="flex flex-col gap-4 p-4 rounded-lg shadow-md">
-        <div className="flex items-center gap-4">
-          <div className="">
-            <UserAvatar src={user?.image} />
+     <div className="flex flex-col gap-4 p-4 rounded-lg shadow-md">
+    <div className="flex justify-between items-start">
+      <div className="flex items-center gap-4">
+        <UserAvatar src={user?.image} />
+        <div className="flex flex-col">
+          <div className="text-xl font-semibold flex flex-row items-center gap-2">
+            {user?.name}
           </div>
-          <div
-            className="
-        flex 
-        flex-col"
-          >
-            <div
-              className="
-            text-xl 
-            font-semibold 
-            flex 
-            flex-row 
-            items-center 
-            gap-2"
-            >
-              {user?.name}
-            </div>
-
-            <div
-              className="
-            font-light 
-          text-neutral-500"
-            >
-              {user?.email}
-            </div>
-            <div 
-    className="font-light text-neutral-500 cursor-pointer hover:text-neutral-700 underline "
-    onClick={() => {
-        if (user?.phoneNumber) {
-            const phoneNumber = user.phoneNumber.replace(/[^0-9]/g, '');
-            window.open(`https://wa.me/${phoneNumber}`, '_blank');
-        }
-    }}
->
-    {user?.phoneNumber}
-</div>
+          <div className="font-light text-neutral-500">
+            {user?.email}
+          </div>
+          <div className="font-light text-neutral-500 cursor-pointer hover:text-neutral-700 underline" onClick={() => {
+              if (user?.phoneNumber) {
+                  const phoneNumber = user.phoneNumber.replace(/[^0-9]/g, '');
+                  window.open(`https://wa.me/${phoneNumber}`, '_blank');
+              }
+          }}>
+            {user?.phoneNumber}
           </div>
         </div>
-        <hr />
+      </div>
+      <div className="text-sm font-light self-start">
+        Role: {user?.role}
+      </div>
+    </div>
+    <hr />
+        {user.role === "Local Citizen" && (
+          <div>
         <div className="text-xl font-semibold ">About this user:</div>
         <div
           className="flex
@@ -150,11 +135,14 @@ const UserPage: React.FC<UserPageProps> = ({
 
             </div>
             
-      </div>
+      
       <ReviewDisplayModal
                 reviews={reviews}
                 currentUser={loggedInUser}
                 />
+                </div>
+                )}
+                </div>
     </Container>
   );
 };

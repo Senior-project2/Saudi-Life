@@ -26,7 +26,8 @@ export default async function getBookings(
     const booking = await prisma.bookings.findMany({
         where: query,
         include:{
-            listing: true
+            listing: true,
+            user:true
 
         },
         orderBy:{
@@ -40,6 +41,7 @@ export default async function getBookings(
             ...bookings.listing,
             createdAt: bookings.listing.createdAt.toISOString()
         },
+        userName: bookings.user.name,
     }))
     return safeBookings;
 }

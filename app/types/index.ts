@@ -22,6 +22,7 @@ Bookings,
 > & {
     createdAt: string;
     listing: SafeActivities
+    userName: string;
 }
 export type SafeReviews = Omit<
 Review,
