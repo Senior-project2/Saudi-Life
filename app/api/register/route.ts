@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt"
 import prisma from "@/libs/prismadb"
 import {NextResponse} from "next/server"
+import { registerSchema } from "@/components/validations/registerValidation";
 
 export async function POST(
     request: Request
@@ -13,15 +14,15 @@ export async function POST(
         role,
         phoneNumber}
         =body;
-
+        const validateData = registerSchema.parse({email, name, password, phoneNumber})
         const hashedPassword = await bcrypt.hash(password, 12);
         const user = await prisma.user.create({
             data:{
-               name, 
-               email,
+               name: validateData.name,
+               email: validateData.email,
                hashedPassword,
                role,
-               phoneNumber
+               phoneNumber: validateData.phoneNumber
             }
 
 

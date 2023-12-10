@@ -14,8 +14,7 @@ import useLoginModal from "@/app/hooks/useLoginModal"
 import { useEffect } from "react"
 import ReactFlagsSelect from "react-flags-select"
 import { CountryCode, getCountryCallingCode } from 'libphonenumber-js'
-
-
+import { registerSchema } from "../validations/registerValidation"
 
 const RegisterModal = () => {
     const registerModal = useRegisterModal()
@@ -83,7 +82,9 @@ const RegisterModal = () => {
         return;
     }
 
+
     const payload = { ...data, role: userRole, phoneNumber: finalPhoneNumber };
+    const validateData = registerSchema.parse(payload);
     setIsLoading(true);
         setIsLoading(true);
         axios.post('api/register', payload)

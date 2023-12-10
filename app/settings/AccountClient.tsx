@@ -20,13 +20,6 @@ const validPhoneNumberPrefixes = ['50', '53', '55', '58', '59', '54', '56', '570
 
 const phoneNumberRegex = new RegExp(`^\\+966(${validPhoneNumberPrefixes.join('|')})\\d{7}$`);
 
-const settingsSchema = z.object({
-    name: z.string().nonempty("Name is required").min(2).max(30),
-    email: z.string().nonempty("Email is required").email("Invalid email format"),
-    phoneNumber: z.string().nonempty(),
-    image: z.string().optional(),
-    description: z.string().min(10).max(200).trim().transform((str) => escape(str.trim()))
-  });
 
 
 
@@ -44,7 +37,6 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
         setValue,
         watch
     } = useForm<FieldValues>({
-        resolver: zodResolver(settingsSchema),
         defaultValues: {
             name: currentUser?.name || '',
             email: currentUser?.email || '',
@@ -65,6 +57,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
             toast.error("Please log in to update your account.");
             return;
         }
+        console.log(data)
         
         setIsLoading(true);
         axios.post('/api/user', data)
@@ -157,6 +150,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
                     register={register}
                     errors={errors}
                 />
+                {currentUser?.role === "Local Citizen" && (
                  <Input
                     id="description"
                     label="Description"
@@ -164,7 +158,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
                     disabled={!editable}
                     register={register}
                     errors={errors}
-                />
+                />)}
                
                 </div>
                 
