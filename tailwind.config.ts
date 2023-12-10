@@ -13,6 +13,7 @@ const config: Config = {
         inter: ["Inter", "sans-serif"],
       },
       colors: {
+        'custom-green': '#29ab87',
         "black-100": "#2B2C35",
         "primary-blue": {
           DEFAULT: "#2B59FF",

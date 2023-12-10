@@ -28,8 +28,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     hover:opacity-80
     transition
     w-full
-    ${outline ? 'bg-white' : 'bg-rose-500'}
-    ${outline ? 'border-black' : 'bg-rose-500'}
+    ${outline ? 'bg-white' : 'bg-custom-green'}
+    ${outline ? 'border-black' : 'bg-custom-green'}
     ${outline ? 'test-black' : 'text-white'}
     ${small ? 'py-1' : 'py-3'}
     ${small ? 'text-sm' : 'text-md'}

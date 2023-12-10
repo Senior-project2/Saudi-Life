@@ -23,11 +23,7 @@ const phoneNumberRegex = new RegExp(`^\\+966(${validPhoneNumberPrefixes.join('|'
 const settingsSchema = z.object({
     name: z.string().nonempty("Name is required").min(2).max(30),
     email: z.string().nonempty("Email is required").email("Invalid email format"),
-    phoneNumber: z.string().nonempty().refine((val) => {
-        return val === undefined || (phoneNumberRegex.test(val) && val.length === 13);
-    }, {
-        message: `Phone number must be exactly 13 characters long, start with +966, and follow with these prefixes: ${validPhoneNumberPrefixes.join(', ')}`,
-    }),
+    phoneNumber: z.string().nonempty(),
     image: z.string().optional(),
     description: z.string().min(10).max(200).trim().transform((str) => escape(str.trim()))
   });

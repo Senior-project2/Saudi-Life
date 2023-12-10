@@ -22,17 +22,18 @@ const UserPage: React.FC<UserPageProps> = ({
     loggedInUser,
     reviews
    }) => {
+    const [isReviewsModalOpen, setIsReviewsModalOpen] = useState(false);
+    const { onOpen } = useDisplayReviewsModal();
   if (!user) {
     return null;
   }
-  const [isReviewsModalOpen, setIsReviewsModalOpen] = useState(false);
+  
   const handleOpenReviews = () => {
     setIsReviewsModalOpen(true);
   };
   const handleCloseReviews = () => {
     setIsReviewsModalOpen(false);
   }
-  const { onOpen } = useDisplayReviewsModal();
 
 
   

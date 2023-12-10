@@ -77,7 +77,7 @@ const Search = () => {
 
             ">
                 <div className="p-2
-                bg-rose-500
+                bg-custom-green
                 rounded-full
                 text-white">
                     <BiSearch size={18}/>
