@@ -8,7 +8,7 @@ import axios from 'axios';
 import useResetPasswordModal from '@/app/hooks/usResetPasswordModal';
 import { SafeUser } from '@/app/types';
 import { FieldValues } from 'react-hook-form';
-
+import { resetPasswordSchema } from '@/libs/validations/resetPasswordValidation';
 
 
 interface ResetPasswordModalProps {
@@ -28,9 +28,18 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
     } = useForm<FieldValues>()
     
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+        if (data.oldPassword.trim().length < 5 || data.oldPassword.trim().length > 15) {
+            toast.error("Old Password must be between 5 and 15 characters");
+            return;
+        }
+        if (data.newPassword.trim().length < 5 || data.newPassword.trim().length > 15) {
+            toast.error("New Password must be between 5 and 15 characters");
+            return;
+        }
+        const validateData = resetPasswordSchema.parse(data)
         setIsLoading(true);
         try {
-            await axios.post('/api/resetPassword', data);
+            await axios.post('/api/resetPassword', validateData);
             toast.success("Password reset successfully!");
             resetPasswordModal.onClose();
         } catch (error) {

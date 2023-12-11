@@ -1,14 +1,16 @@
 import prisma from '@/libs/prismadb';
 import { NextResponse } from 'next/server';
+import { reviewSchema } from '@/libs/validations/reviewValidation';
 
 export async function POST(request: Request) {
   const body = await request.json();
   const { content, authorId, reviewedUserId } = body;
+  const validateData = reviewSchema.parse({ content, authorId, reviewedUserId });
 
   try {
     const newReview = await prisma.review.create({
       data: {
-        content,
+        content: validateData.content,
         authorId,
         reviewedUserId
       },

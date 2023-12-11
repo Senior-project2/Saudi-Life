@@ -14,7 +14,7 @@ import useLoginModal from "@/app/hooks/useLoginModal"
 import { useEffect } from "react"
 import ReactFlagsSelect from "react-flags-select"
 import { CountryCode, getCountryCallingCode } from 'libphonenumber-js'
-import { registerSchema } from "../validations/registerValidation"
+import { registerSchema } from "@/libs/validations/registerValidation"
 
 const RegisterModal = () => {
     const registerModal = useRegisterModal()
@@ -57,11 +57,14 @@ const RegisterModal = () => {
     
         if (userRole === 'Local Citizen') {
             countryCode = "+966";
-            setPhoneNumber(inputValue); //update the local citizen phone number
         } else if (userRole === 'Tourist') {
-            countryCode = "+" + getCountryCallingCode(flagSelected as CountryCode); //get the country code for the selected flag
-            const fullNumber = countryCode + inputValue.slice(countryCode.length); //set new input to the country code
-            setTouristPhoneNumber(fullNumber); //update the tourist phone number
+            countryCode = "+" + getCountryCallingCode(flagSelected as CountryCode);
+        }
+    
+        if (!inputValue.startsWith(countryCode)) {
+            setPhoneNumber(countryCode);
+        } else {
+            setPhoneNumber(inputValue);
         }
     };
     
@@ -77,17 +80,33 @@ const RegisterModal = () => {
     const onSubmit: SubmitHandler<FieldValues> = (data) =>{
         let finalPhoneNumber = userRole === 'Local Citizen' ? phoneNumber : touristPhoneNumber;
 
-    if (finalPhoneNumber.length !== 13 && userRole === 'Local Citizen') {
-        toast.error("Phone number must be exactly 13 characters long.");
-        return;
-    }
+        if (!data.email || !/\S+@\S+\.\S+/.test(data.email)) {
+            toast.error("Invalid email format");
+            return;
+        }
+        if (!data.name || data.name.length < 3 || data.name.length > 20) {
+            toast.error("Name must be between 3 and 20 characters");
+            return;
+        }
+        if (!data.password || data.password.length < 5 || data.password.length > 15) {
+            toast.error("Password must be between 5 and 15 characters");
+            return;
+        }
+        if (!data.phoneNumber || data.phoneNumber.length < 7 || data.phoneNumber.length > 16) {
+            toast.error("Phone number must be between 7 and 16 digits");
+            return;
+        }
+        if (!['Local Citizen', 'Tourist'].includes(userRole)) {
+            toast.error("Invalid role selected");
+            return;
+        }
 
 
     const payload = { ...data, role: userRole, phoneNumber: finalPhoneNumber };
     const validateData = registerSchema.parse(payload);
     setIsLoading(true);
         setIsLoading(true);
-        axios.post('api/register', payload)
+        axios.post('api/register', validateData)
         .then(() =>{
             toast.success("Account created successfully!")
             registerModal.onClose();
@@ -151,8 +170,8 @@ const RegisterModal = () => {
         errors={errors}
         required
         />
-        <select onChange={handleRoleChange} className="form-select">
-        <option value="">Select Role</option>
+        <select onChange={handleRoleChange} className="form-select" >
+        <option value="" disabled>Select Role</option>
         <option value="Local Citizen">Local Citizen</option>
         <option value="Tourist">Tourist</option>
       </select>

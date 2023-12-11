@@ -1,9 +1,7 @@
 import {NextResponse} from "next/server"
 import prisma from "@/libs/prismadb"
 import getCurrentUser from "@/app/actions/getCurrentUser"
-import set from "date-fns/set"
-
-import { z } from 'zod';
+import { activityInfoValidation } from "@/libs/validations/activityInfoValidation"
 
 
 
@@ -30,19 +28,21 @@ export async function POST(
         activityDate,
         activityTime
     } = body;
+
+    const validateData = activityInfoValidation.parse({category, guestCount, imageSrc, title, description, price: Number(price), activityDate: body.activityDate, activityTime: body.activityTime})
     const listings = await prisma.listings.create({
         
             data: {
-                category,
+                category: validateData.category,
                 locationValue: location.value,
-                guestCount,
-                imageSrc,
-                price: parseInt(price, 10),
-                title,
-                description,
+                guestCount: validateData.guestCount,
+                imageSrc: validateData.imageSrc,
+                price: validateData.price,
+                title: validateData.title,
+                description: validateData.description,
                 userId: currentUser.id,
-                activityDate: new Date(activityDate),
-                activityTime
+                activityDate: new Date(validateData.activityDate),
+                activityTime: validateData.activityTime
         }
              })
     if(listings){

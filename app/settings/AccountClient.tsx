@@ -15,10 +15,9 @@ import ResetPasswordModal from '@/components/modals/resetPasswordModal';
 import UserImageUpload from '@/components/UserImageUpload';
 import {z} from "zod"
 import {zodResolver} from "@hookform/resolvers/zod"
+import { settingsSchema } from '@/libs/validations/settingsValidation';
 
-const validPhoneNumberPrefixes = ['50', '53', '55', '58', '59', '54', '56', '570', '571', '572', '576', '577', '578'];
 
-const phoneNumberRegex = new RegExp(`^\\+966(${validPhoneNumberPrefixes.join('|')})\\d{7}$`);
 
 
 
@@ -57,10 +56,32 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
             toast.error("Please log in to update your account.");
             return;
         }
-        console.log(data)
-        
+        if (data.email && !/\S+@\S+\.\S+/.test(data.email)) {
+            toast.error("Invalid email format");
+            return;
+        }
+        if (data.name && (data.name.length < 3 || data.name.length > 20)) {
+            toast.error("Name must be between 3 and 20 characters");
+            return;
+        }
+        if (data.phoneNumber && (data.phoneNumber.length < 7 || data.phoneNumber.length > 16)) {
+            toast.error("Phone number must be between 7 and 16 digits");
+            return;
+        }
+        if (currentUser.role === "Local Citizen" && data.description && (data.description.length < 10 || data.description.length > 200)) {
+            toast.error("Description must be between 10 and 200 characters");
+            return;
+        }
+        let schema = settingsSchema.omit({ description: true });
+    if (currentUser.role === "Local Citizen") {
+        schema = schema.extend({
+            description: z.string().min(10, "Description must be at least 10 characters long").max(200, "Description must be no more than 200 characters long"),
+        });
+    }
+       
         setIsLoading(true);
-        axios.post('/api/user', data)
+        const validateData = schema.parse(data)
+        axios.post('/api/user', validateData)
             .then(() => {
                 toast.success('Account updated successfully');
                 setEditable(false);

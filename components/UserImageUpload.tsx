@@ -30,7 +30,7 @@ const UserImageUpload: React.FC<UserImageUploadProps> = ({
     }, [onChange])
     
     const uploadOptions = {
-        uploadPresent: "zlalvxhl",  
+         
         maxFiles: 1,
         resourceType: "image",
         folder: `${userId}/UserImage/`,
@@ -47,7 +47,7 @@ const UserImageUpload: React.FC<UserImageUploadProps> = ({
   return (
     <CldUploadWidget
     onUpload={handleUpload}
-    
+    uploadPreset="zlalvxhl"
     options={
         
         uploadOptions

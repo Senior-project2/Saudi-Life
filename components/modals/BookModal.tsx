@@ -14,7 +14,7 @@ import Input from "../Input"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import axios from "axios"
-
+import { activityInfoValidation } from "@/libs/validations/activityInfoValidation"
 
 
 enum STEPS{
@@ -38,11 +38,52 @@ export const BookModal =   () => {
     const onBack = () => {
         setStep((value) => value -1)
     }
-
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         if(step !== STEPS.DATE){ 
         return onNext()
         }
+
+        if (!data.category) {
+            return toast.error("Category is required");
+        }
+        if(!data.location){
+            return toast.error("Location is required");
+        }
+        if (!data.guestCount || data.guestCount < 1) {
+            return toast.error("At least one guest is required");
+        }
+        if (!data.imageSrc || !/^https?:\/\/.+/.test(data.imageSrc)) {
+            return toast.error("Invalid Image");
+        }
+        if (!data.title || data.title.length < 5 || data.title.length > 30) {
+            return toast.error("Title must be between 5 and 30 characters long");
+        }
+        if (!data.description || data.description.length < 15 || data.description.length > 250) {
+            return toast.error("Description must be between 15 and 250 characters long");
+        }
+        if (isNaN(Number(data.price)) || Number(data.price) < 0) {
+            return toast.error("Price cannot be negative");
+        }
+        if (!data.activityDate || new Date(data.activityDate).toString() === 'Invalid Date') {
+            return toast.error("Invalid activity date");
+        }
+        if (!data.activityTime) {
+            return toast.error("Activity time is required");
+        }
+        const currentDateTime = new Date();
+        const selectedDateTime = new Date(data.activityDate + 'T' + data.activityTime);
+        if (selectedDateTime < currentDateTime) {
+            return toast.error("Please select a future date and time for the activity.");
+        }
+    
+        const modifiedData = {
+            ...data,
+            price:  Number(data.price),
+            location: data.location
+            
+        };
+        const validateData = activityInfoValidation.parse(modifiedData)
+
         
          setIsLoading(true)
 

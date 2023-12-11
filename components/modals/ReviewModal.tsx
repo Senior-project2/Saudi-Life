@@ -7,10 +7,10 @@ import CustomButton from '../CustomButton';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import ClientOnly from '../ClientOnly';
-import EmptyState from '../EmptyState';
 import { SafeReviews } from '@/app/types';
-import { format, parseISO } from 'date-fns';
+import { useRouter } from "next/navigation"
+import { reviewSchema } from '@/libs/validations/reviewValidation';
+
 
 interface ReviewModalProps {
     authorId: string;
@@ -18,9 +18,6 @@ interface ReviewModalProps {
     existingReviews: SafeReviews[];
 }
 
-const reviewSchema = z.object({
-    reviewContent: z.string().min(10, "Review must be at least 10 characters long").max(100, "Review must be no more than 100 characters long")
-});
 
 const ReviewModal: React.FC<ReviewModalProps> = ({
     authorId,
@@ -29,7 +26,6 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
     }
     ) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-     //Check if the current user has already reviewed this user
     const hasReviewed = existingReviews.some(review => review.author.id === authorId);
 
     const { register, 
@@ -37,7 +33,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
         formState: { errors }, 
         reset } = 
         useForm({
-        resolver: zodResolver(reviewSchema)
+        
     });
 
     const handleAddReviewClick = () => {
@@ -52,10 +48,22 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
     const handleModalClose = () => {
         setIsModalOpen(false);
     };
+    const router = useRouter()
 
-    const handleReviewSubmit = async (data: any) => {
+    const handleReviewSubmit =  async (data: any) => {
+        const content = data.reviewContent.trim()
+        if (content.length < 10) {
+            return toast.error("Review must be at least 10 characters long");
+            
+        }
+    
+        if (content.length > 90) {
+            toast.error("Review must be no more than 90 characters long");
+            return;
+        }
+        
         try {
-            const response = await axios.post('/api/reviews', {
+             await axios.post('/api/reviews', {
                 content: data.reviewContent,
                 authorId: authorId,
                 reviewedUserId: reviewedUserId,
@@ -63,6 +71,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
 
             toast.success('Review submitted successfully');
             reset();
+            router.refresh()
             setIsModalOpen(false);
         } catch (error) {
             toast.error('Failed to submit review');

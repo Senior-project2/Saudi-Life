@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import bcrypt from "bcrypt";
-import prisma from "@/libs/prismadb"; // Adjust the import path as needed
+import prisma from "@/libs/prismadb";
+import { resetPasswordSchema } from "@/libs/validations/resetPasswordValidation";
 
 export async function POST(request: Request) {
     const currentUser = await getCurrentUser();
@@ -12,6 +13,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const { oldPassword, newPassword } = body;
+    const validateData = resetPasswordSchema.parse({ oldPassword, newPassword });
 
     try {
         const user = await prisma.user.findUnique({ where: { id: currentUser.id } });
@@ -21,13 +23,13 @@ export async function POST(request: Request) {
         }
 
         // Compare old password
-        const isMatch = await bcrypt.compare(oldPassword, user.hashedPassword);
+        const isMatch = await bcrypt.compare(validateData.oldPassword, user.hashedPassword);
         if (!isMatch) {
             return NextResponse.error();
         }
 
         // Hash new password and update user
-        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        const hashedNewPassword = await bcrypt.hash(validateData.newPassword, 10);
         await prisma.user.update({
             where: { id: currentUser.id },
             data: { hashedPassword: hashedNewPassword },
