@@ -1,3 +1,4 @@
+//Retrieves a list of favorite activities for current user
 import prisma from "@/libs/prismadb";
 import getCurrentUser from "./getCurrentUser";
 
@@ -9,6 +10,7 @@ export default async function getFavorites(){
             return []
         }
 
+        //Returns list of favorite activities
         const favorites = await prisma.listings.findMany({
             where: {
                 id: {

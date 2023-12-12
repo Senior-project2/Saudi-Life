@@ -5,6 +5,7 @@ import prisma from "@/libs/prismadb";
 export async function POST(
     request: Request
 ){
+    
     const currentUser = await getCurrentUser();
 
     if(!currentUser){

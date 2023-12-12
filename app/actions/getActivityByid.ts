@@ -3,14 +3,14 @@ import prisma from "@/libs/prismadb";
 interface IParams {
     activityId?: string;
 }
-
+//fetches a list of activities
 export default async function getActivityByid(params: IParams)
 {
     
     try{
         const { activityId } = params;
        
-
+        //fetching the activity from database using the activityId.
         const activity = await prisma.listings.findUnique({
             where:{
                 id: activityId,

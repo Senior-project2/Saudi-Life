@@ -50,6 +50,18 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
     const resetPasswordModal = useResetPasswordModal();
     const [isLoading, setIsLoading] = useState(false);
     const watchImage = watch('image');
+    const handlePhoneNumberChange = (event: any) => {
+        const inputValue = event.target.value;
+        const countryCode = "+966";
+
+        if (currentUser?.role === "Local Citizen") {
+            if (!inputValue.startsWith(countryCode)) {
+                setValue('phoneNumber', countryCode + inputValue.slice(countryCode.length));
+            } else {
+                setValue('phoneNumber', inputValue);
+            }
+        }
+    }
 
     const onSubmit = async (data: FieldValues) => {
         if (!currentUser) {
@@ -170,7 +182,9 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
                     disabled={!editable}
                     register={register}
                     errors={errors}
+                    onChange={handlePhoneNumberChange}
                 />
+                
                 {currentUser?.role === "Local Citizen" && (
                  <Input
                     id="description"
@@ -180,9 +194,21 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
                     register={register}
                     errors={errors}
                 />)}
+
                
                 </div>
-                
+                {currentUser?.role === "Tourist" && (
+                    <div
+                    className="
+                    font-light 
+                    text-neutral-500
+                    pl-2
+                    text-sm
+                    "
+                    >
+                        Please include country code.
+                    </div>
+                )}
                 <div className="p-4">
                 <CustomButton
                 label="Edit Account Information"
@@ -199,10 +225,10 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
                 </div>
                 </div>
                 <div className="
-            text-neutral-500
             text-center
             mt-4
-            font-light">
+            font-light 
+            ">
                
                 <div className="
                 text-neutral-800

@@ -7,8 +7,8 @@ export interface IActivityParams{
     category?: string;
     activityDate?: string;
 }
-
-export default async function getActivities(
+//fetches a single activity from the database 
+export default async function getActivities( 
     params: IActivityParams
 ) {
 try{
@@ -38,10 +38,12 @@ try{
 
     const activities = await prisma.listings.findMany({
         where: query,
+        //sorting result by creation date in descending order
         orderBy: {
             createdAt: "desc"
         }
     })
+    //map the activities in safe activities
     const safeActivities = activities.map((activity) => ({
         ...activity,
         createdAt: activity.createdAt.toISOString(),
@@ -54,4 +56,3 @@ try{
     throw new Error(error)
 }
 }
-

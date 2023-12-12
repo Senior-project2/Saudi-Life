@@ -1,5 +1,4 @@
 "use client"
-import { Bookings } from '@prisma/client'
 import { SafeUser, SafeActivities, SafeBookings } from '@/app/types'
 import { useCallback, useEffect, useMemo } from 'react'
 import { categories } from '@/components/navbar/Categories'
@@ -13,8 +12,7 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import ActivityReservation from '@/components/activities/ActivityReservation'
 import TotalPriceCounter from '@/components/TotalPriceCounter'
-import { parse, format, parseISO, isPast } from 'date-fns'
-import EmptyState from '@/components/EmptyState'
+
 
 
 
@@ -39,8 +37,10 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
     const [isLoading, setIsLoading] = useState(false)
     const [totalPrice, setTotalPrice] = useState(activity.price)
     const [numberOfGuests, setNumberOfGuests] = useState(1);
+    
     const onCreateBooking = 
     useCallback(() =>{
+        
         if(!currentUser){
             return loginModal.onOpen()
             
@@ -72,18 +72,20 @@ const ActivityClient: React.FC<ActivityClientProps> = ({
 
     
     
-    
+    //Set price of activity when number of guest change.
     useEffect(() => {
         const newTotalPrice = (activity.price * numberOfGuests);
         setTotalPrice(newTotalPrice);
     }, [numberOfGuests, activity.price]);
 
 
+    //saves matching category from categries
     const category = useMemo(() => {
         return categories.find((item) =>
          item.label === activity.category)
     }, [activity.category])
 
+    //calculates total number of booked guests
     const totalBookedGuests = useMemo(() => {
         return bookings.reduce((total, booking) => total + booking.numberOfGuests, 0);
     }, [bookings]);

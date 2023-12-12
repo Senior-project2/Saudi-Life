@@ -1,3 +1,4 @@
+//Retrieves user details based on userId
 import prisma from "@/libs/prismadb";
 
 export default async function getUserById(userId: string) {
@@ -9,7 +10,7 @@ export default async function getUserById(userId: string) {
         if (!user) {
             return null;
         }
-
+        //Returns the user's details
         return {
             ...user,
             createdAt: user.createdAt.toISOString(),

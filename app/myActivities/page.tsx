@@ -8,12 +8,12 @@ import MyActivitiesClient from "./MyActivitiesClient"
 const MyActivitiesPage = async () => {
     const currentUser = await getCurrentUser()
 
-    if(!currentUser){
+    if(!currentUser || currentUser.role !== 'Local Citizen'){
   return (
     <ClientOnly>
         <EmptyState
         title="Unauthorized"
-        subtitle="Please Login to view this page"
+        subtitle="you are unauthorized to view this page"
         />
     </ClientOnly>
   )

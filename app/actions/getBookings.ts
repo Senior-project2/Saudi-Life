@@ -1,3 +1,4 @@
+//Retrieves bookings based on specified parameters
 import prisma from "@/libs/prismadb";
 
 interface IParams{
@@ -30,6 +31,7 @@ export default async function getBookings(
             user:true
 
         },
+        //Sorting the result by creation date in descending order
         orderBy:{
             createdAt: "desc"
         }

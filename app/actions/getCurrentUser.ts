@@ -1,3 +1,4 @@
+//Retrieves the current user details
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import prisma from "@/libs/prismadb";
@@ -10,7 +11,7 @@ export async function getSession() {
 export default async function getCurrentUser(){
     try{
         const session = await getSession();
-
+        //Checks if the session has a user with an email
         if(!session?.user?.email){
             return null;
         }
@@ -20,6 +21,7 @@ export default async function getCurrentUser(){
         if(!currentUser){
             return null;
         }
+        //Returns the user's information
         return {
             ...currentUser,
             createdAt: currentUser.createdAt.toISOString(),

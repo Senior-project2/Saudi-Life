@@ -1,3 +1,4 @@
+//Fetches reviews related to a specific user by userId
 import prisma from "@/libs/prismadb";
 
 interface IParams {
@@ -12,6 +13,7 @@ export default async function getUserReviews(params: IParams) {
             where: {
                 reviewedUserId: userId,
             },
+            //Includes related author and reviewedUser details
             include: {
                 author: true, 
                 reviewedUser: true,
@@ -21,7 +23,7 @@ export default async function getUserReviews(params: IParams) {
         if (!reviews) {
             return [];
         }
-
+        //Maps each review to format date fields and include details of the author and reviewed use
         return reviews.map(review => ({
         ...review,
         createdAt: review.createdAt.toISOString(),
