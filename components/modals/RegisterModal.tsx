@@ -15,6 +15,7 @@ import { useEffect } from "react"
 import ReactFlagsSelect from "react-flags-select"
 import { CountryCode, getCountryCallingCode } from 'libphonenumber-js'
 import { registerSchema } from "@/libs/validations/registerValidation"
+import { useRouter } from "next/navigation"
 
 const RegisterModal = () => {
     const registerModal = useRegisterModal()
@@ -46,6 +47,7 @@ const RegisterModal = () => {
 
 
     });
+    const router = useRouter();
 
     useEffect(() => {
         setValue("phoneNumber", phoneNumber);
@@ -57,15 +59,14 @@ const RegisterModal = () => {
     
         if (userRole === 'Local Citizen') {
             countryCode = "+966";
+            setPhoneNumber(inputValue); //update the local citizen phone number
         } else if (userRole === 'Tourist') {
-            countryCode = "+" + getCountryCallingCode(flagSelected as CountryCode);
+            countryCode = "+" + getCountryCallingCode(flagSelected as CountryCode); //get the country code for the selected flag
+            const fullNumber = countryCode + inputValue.slice(countryCode.length); //set new input to the country code
+            setTouristPhoneNumber(fullNumber); //update the tourist phone number
+            setValue("phoneNumber", touristPhoneNumber); 
         }
-    
-        if (!inputValue.startsWith(countryCode)) {
-            setPhoneNumber(countryCode);
-        } else {
-            setPhoneNumber(inputValue);
-        }
+        
     };
     
     const handleCountryChange = (code: any) => {
@@ -92,14 +93,16 @@ const RegisterModal = () => {
             toast.error("Password must be between 5 and 15 characters");
             return;
         }
-        if (!data.phoneNumber || data.phoneNumber.length < 7 || data.phoneNumber.length > 16) {
-            toast.error("Phone number must be between 7 and 16 digits");
-            return;
-        }
         if (!['Local Citizen', 'Tourist'].includes(userRole)) {
             toast.error("Invalid role selected");
             return;
         }
+        if (!data.phoneNumber || data.phoneNumber.length < 7 || data.phoneNumber.length > 16) {
+            toast.error("Phone number must be between 7 and 16 digits");
+            console.log(data.phoneNumber.length)
+            return;
+        }
+        
 
 
     const payload = { ...data, role: userRole, phoneNumber: finalPhoneNumber };
@@ -109,6 +112,7 @@ const RegisterModal = () => {
         axios.post('api/register', validateData)
         .then(() =>{
             toast.success("Account created successfully!")
+            router.refresh()
             registerModal.onClose();
             loginModal.onOpen();
         })
@@ -171,7 +175,7 @@ const RegisterModal = () => {
         required
         />
         <select onChange={handleRoleChange} className="form-select" >
-        <option value="" disabled>Select Role</option>
+        <option value="" >Select Role</option>
         <option value="Local Citizen">Local Citizen</option>
         <option value="Tourist">Tourist</option>
       </select>
@@ -221,11 +225,7 @@ const RegisterModal = () => {
         gap-4
         mt-3">
             <hr/>
-            <CustomButton
-            outline
-            label="Continue with Google"
-            icon={FcGoogle}
-            onClick={() => signIn('google')}/>
+            
             <div className="
             text-neutral-500
             text-center

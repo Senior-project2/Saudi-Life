@@ -11,7 +11,7 @@ export async function POST(
 ){
     const currentUser = await getCurrentUser()
 
-    if(!currentUser){
+    if(!currentUser || currentUser.role !== "Local Citizen"){
         return NextResponse.error()
     }
 

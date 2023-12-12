@@ -7,6 +7,11 @@ module.exports = {
         "res.cloudinary.com",
       ]
     },
+    modularizeImports: {
+      'react-icons/?(((\\w*)?/?)*)': {
+          transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}'
+      }
+  },
     
    
     

@@ -101,7 +101,10 @@ const UserMenu: React.FC<UserMenuProps> = ({
 
                     {currentUser ? (
                         <>
-                        
+                        <BurgerMenu
+                        onClick={() => {router.push("/settings")}}
+                        label="Settings"
+                        />
                         <BurgerMenu
                         onClick={() => {router.push("/booking")}}
                         label="My Bookings"
@@ -109,10 +112,6 @@ const UserMenu: React.FC<UserMenuProps> = ({
                            <BurgerMenu
                         onClick={() => {router.push("favorites")}}
                         label="My Favorites"
-                        />
-                         <BurgerMenu
-                        onClick={() => {router.push("/settings")}}
-                        label="Settings"
                         />
                         {currentUser.role === "Local Citizen" && (
                           <>
@@ -124,6 +123,11 @@ const UserMenu: React.FC<UserMenuProps> = ({
                           <BurgerMenu
                         onClick={() => {router.push("/myActivities")}}
                         label="My activities"
+                        />
+
+                        <BurgerMenu
+                        onClick={() => {router.push(`/User/${currentUser.id}`)}}
+                        label="My profile"
                         />
 
                           <BurgerMenu

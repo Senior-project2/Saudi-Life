@@ -220,11 +220,11 @@ export const BookModal =   () => {
             gap-8">
                 <Heading
                 title="Share more information about your activity"
-                subtitle="This is where tourists find you."
+                subtitle="Let tourists know the number of guests you can accommodate"
                 />
                 <Counter
                 title="Number of Guests"
-                subtitle="How many guests can you bring?"
+                subtitle="Set the maximum guest count for your activity"
                 value={guestCount}
                 onChange={(value) => setCustomValue('guestCount', value)}
                 />

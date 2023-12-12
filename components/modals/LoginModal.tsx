@@ -100,11 +100,7 @@ const LoginModal = () => {
         gap-4
         mt-3">
             <hr/>
-            <CustomButton
-            outline
-            label="Continue with Google"
-            icon={FcGoogle}
-            onClick={() => signIn('google')}/>
+           
             <div className="
             text-neutral-500
             text-center
