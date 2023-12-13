@@ -1,3 +1,5 @@
+//*provide a safer way to work with your . overriding date types with string
+//* for a better shape of data to work with
 import { Bookings, Listings, User, Review } from "@prisma/client"
 import { type } from "os";
 

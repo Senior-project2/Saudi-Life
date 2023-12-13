@@ -24,13 +24,7 @@ const UserProfilePage= async ({ params }: { params: IParams}) => {
 
     const currentUser = await getCurrentUser();
     const userReviews = await getUserReviews({ userId: user.id });
-    if (!user) {
-        return (
-            <ClientOnly>
-                <EmptyState />
-            </ClientOnly>
-        );
-    }
+  
 
     return (
         <div>

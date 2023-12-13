@@ -1,3 +1,4 @@
+//*this component displays user information, activities, and reviews for a user profile.
 "use client";
 import React, { useEffect, useState } from "react";
 import Container from "@/components/Container";
@@ -41,6 +42,7 @@ const UserPage: React.FC<UserPageProps> = ({
 
   return (
     <Container>
+      {/*display user information under here*/ }
      <div className="flex flex-col gap-4 p-4 rounded-lg shadow-md">
     <div className="flex justify-between items-start">
       <div className="flex items-center gap-4">
@@ -95,6 +97,7 @@ const UserPage: React.FC<UserPageProps> = ({
         2xl:grid-cols-6
         gap-8
       ">
+        {/*check if user has activities. if none, then display no activites found. */}
         {activities.length > 0 ? activities.map(activity => (
           <ActivityCard
             key={activity.id}

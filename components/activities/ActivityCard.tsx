@@ -40,6 +40,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
     const {getByValue} = useSaudiStates()
 
     const location = getByValue(data.locationValue)
+    //function to handle cancellation
     const handleCancel = useCallback((
         e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             e.stopPropagation();

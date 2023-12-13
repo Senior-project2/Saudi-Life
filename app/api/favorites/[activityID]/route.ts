@@ -24,9 +24,10 @@ export async function POST(
   }
 
   let favoriteIds = [...(currentUser.favoriteIds || [])];
-
+//add new activityID to the favoriteIds array
   favoriteIds.push(activityID);
 
+  //update the users favoriteIds in the database
   const user = await prisma.user.update({
     where: {
       id: currentUser.id
@@ -39,6 +40,7 @@ export async function POST(
   return NextResponse.json(user);
 }
 
+//repeat the same process but with DELETE method
 export async function DELETE(
   request: Request, 
   { params }: { params: IParams }

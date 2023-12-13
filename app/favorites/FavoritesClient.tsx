@@ -1,3 +1,6 @@
+//*this component contains two functions for handling POST 
+//*and DELETE requests related to user favorite activities.
+"use client"
 import Container from "@/components/Container";
 import { SafeActivities, SafeUser } from "../types";
 import Heading from "@/components/Heading";
@@ -29,7 +32,9 @@ const FavoritesClient: React.FC<FavoritesClientProps> = ({
         2xl:grid-cols-6
         gap-8
         ">
+            
             {activities.map((activity) => (
+                //display list of favorite activity as an ActivityCard
                 <ActivityCard
                 currentUser={currentUser}
                 key={activity.id}

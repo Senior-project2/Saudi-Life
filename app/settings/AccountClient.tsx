@@ -50,6 +50,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
     const resetPasswordModal = useResetPasswordModal();
     const [isLoading, setIsLoading] = useState(false);
     const watchImage = watch('image');
+    //function to handle phoneNumber input. Makes local citizens unable to change country code (+966)
     const handlePhoneNumberChange = (event: any) => {
         const inputValue = event.target.value;
         const countryCode = "+966";
@@ -64,6 +65,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
     }
 
     const onSubmit = async (data: FieldValues) => {
+        //validation
         if (!currentUser) {
             toast.error("Please log in to update your account.");
             return;
@@ -92,7 +94,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
     }
        
         setIsLoading(true);
-        const validateData = schema.parse(data)
+        const validateData = schema.parse(data)//parse data to validate it (but using a library.)
         axios.post('/api/user', validateData)
             .then(() => {
                 toast.success('Account updated successfully');
@@ -109,7 +111,7 @@ const AccountClient: React.FC<AccountClientProps> = ({ currentUser }) => {
 
     
 
-    
+    //set form values when currentUser information changes
     React.useEffect(() => {
         if (currentUser) {
             setValue('name', currentUser.name || '');

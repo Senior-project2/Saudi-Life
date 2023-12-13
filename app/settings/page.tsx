@@ -1,4 +1,5 @@
-
+//*This component displays the users account information, 
+//*allows them to edit and update their information
 import React from 'react';
 import ClientOnly from '@/components/ClientOnly';
 import EmptyState from '@/components/EmptyState';

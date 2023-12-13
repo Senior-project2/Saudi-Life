@@ -1,3 +1,5 @@
+//*This component displays a list of reservations made on the users activities
+//* and allows them to cancel reservations.
 "use client"
 import {toast} from "react-hot-toast"
 import {useState, useCallback} from "react"
@@ -18,6 +20,8 @@ const ReservationClient: React.FC<ReservationClientProps> = ({
 }) => {
   const router = useRouter()
   const [deletingId, setDeletingId] = useState('')
+
+  //handle cancellation of booking
   const onCancel = useCallback((id: string) =>{
     setDeletingId(id)
     axios.delete(`/api/reservations/${id}`)
@@ -53,6 +57,7 @@ const ReservationClient: React.FC<ReservationClientProps> = ({
       gap-8
       ">
         {bookings.map((booking) => (
+          //map through bookings and display them as ActivityCards
           <ActivityCard
           key={booking.id}
           data={booking.listing}

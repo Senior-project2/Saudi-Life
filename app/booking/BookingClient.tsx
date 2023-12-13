@@ -1,3 +1,4 @@
+
 "use client"
 import Container from "@/components/Container"
 import { SafeBookings, SafeUser} from "../types"
@@ -21,7 +22,7 @@ const BookingClient: React.FC<BookingClientProps> = ({
 }) => {
     const router = useRouter()
     const[deletingId, setDeletingId] = useState('')
-    
+    //handle cancellation of a booking
     const onCancel = useCallback((id: string) => {
         setDeletingId(id)
         axios.delete(`/api/reservations/${id}`)
@@ -33,6 +34,7 @@ const BookingClient: React.FC<BookingClientProps> = ({
             toast.error(error?.response?.data?.error)
         })
         .finally(() =>{
+            //clear the deletingId
             setDeletingId('')
         })
     },[router])
@@ -54,6 +56,7 @@ const BookingClient: React.FC<BookingClientProps> = ({
         gap-8
         ">
             {bookings.map((booking) =>(
+                //display list of booked activities as an ActivityCard
                 <ActivityCard
                 key={booking.id}
                 data={booking.listing}

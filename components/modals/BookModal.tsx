@@ -64,6 +64,9 @@ export const BookModal =   () => {
         if (isNaN(Number(data.price)) || Number(data.price) < 0) {
             return toast.error("Price cannot be negative");
         }
+        if (/^0[0-9]+/.test(data.price.toString())) {
+            return toast.error("Invalid price format");
+        }
         if (!data.activityDate || new Date(data.activityDate).toString() === 'Invalid Date') {
             return toast.error("Invalid activity date");
         }

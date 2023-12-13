@@ -1,3 +1,6 @@
+//* This is the page where the user can see all the activities that they have created. 
+//*They can also cancel the activity from this page.
+
 "use client"
 import Container from "@/components/Container"
 import { SafeActivities, SafeUser} from "../types"
@@ -20,18 +23,8 @@ const MyActivityesClient: React.FC<MyActivityesClientProps> = ({
     activities,
     currentUser
 }) => {
-    const filteredActivities = activities.filter((activity) => {
-        let activityDateTime;
-        if (activity.activityDate && activity.activityTime) {
-            const datePart = typeof activity.activityDate === 'string' 
-                ? parseISO(activity.activityDate).toISOString().split('T')[0] 
-                : activity.activityDate.toISOString().split('T')[0];
-            const combinedDateTime = `${datePart}T${activity.activityTime}`;
-            activityDateTime = parseISO(combinedDateTime);
-        }
-        const expired = activityDateTime ? !isPast(activityDateTime) : true;
-        return expired
-    });
+    
+    
     const router = useRouter()
     const[deletingId, setDeletingId] = useState('')
     const onCancel = useCallback((id: string) => {
@@ -67,14 +60,17 @@ const MyActivityesClient: React.FC<MyActivityesClientProps> = ({
         ">
             
             {activities.map((activity) => {
+                //filter out expired activities
                     let activityDateTime;
                     if (activity.activityDate && activity.activityTime) {
+                         //combine date and time into a datetime object
                         const datePart = typeof activity.activityDate === 'string' 
                             ? parseISO(activity.activityDate).toISOString().split('T')[0] 
                             : activity.activityDate.toISOString().split('T')[0];
                         const combinedDateTime = `${datePart}T${activity.activityTime}`;
                         activityDateTime = parseISO(combinedDateTime);
                     }
+                    //expired initially set to false, check if ispast and change it into true
                     const expired = activityDateTime ? isPast(activityDateTime) : false;
 
                     return (

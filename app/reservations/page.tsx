@@ -18,6 +18,7 @@ const ReservationsPage = async() => {
         
     }
 
+    //fetch bookings of activity created by the current user
     const bookings = await getBookings({
         authorId: currentUser.id
     })
